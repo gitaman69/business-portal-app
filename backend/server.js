@@ -18,7 +18,7 @@ const corsOptions = {
 }
 
 // Middleware
-app.use(corsOptions); // Enable cross-origin resource sharing
+app.use(cors(corsOptions)); // Enable cross-origin resource sharing
 app.use(bodyParser.json());
 
 // Connect to MongoDB
