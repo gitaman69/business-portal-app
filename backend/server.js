@@ -12,8 +12,13 @@ const app = express();
 
 const _dirname = path.resolve();
 
+const corsOptions = {
+  origin:"https://business-portal-app.onrender.com",
+  credentials:true
+}
+
 // Middleware
-app.use(cors()); // Enable cross-origin resource sharing
+app.use(corsOptions); // Enable cross-origin resource sharing
 app.use(bodyParser.json());
 
 // Connect to MongoDB
