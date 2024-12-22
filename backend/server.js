@@ -10,10 +10,10 @@ dotenv.config();
 
 const app = express();
 
-const _dirname = path.resolve();
+const __dirname = path.resolve();
 
 const corsOptions = {
-  origin:"https://business-portal-app-plum.vercel.app",
+  origin:"https://business-portal-app.onrender.com",
   credentials:true
 }
 
@@ -28,9 +28,9 @@ connectDB();
 app.use("/api/auth", authRoutes);
 
 // Serve static files for React frontend
-app.use(express.static(path.join(_dirname, "/frontend/build")));
+app.use(express.static(path.join(__dirname, "/frontend/build")));
 app.get("*", (req, res) => {
-  res.sendFile(path.join(_dirname, "frontend", "build", "index.html"));
+  res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
 });
 
 const PORT = process.env.PORT || 5000;

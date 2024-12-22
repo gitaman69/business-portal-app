@@ -24,13 +24,13 @@ export default function LoginPage({onLogin}) {
     setSuccess("");
 
     try {
-      const response = await axios.post("https://business-portal-app-plum.vercel.app/api/auth/login", {
+      const response = await axios.post("https://business-portal-app.onrender.com/api/auth/login", {
         email: formData.email,
         password: formData.password,
         licenseId: formData.licenseId,
       });
 
-      const userResponse = await axios.get(`https://business-portal-app-plum.vercel.app/api/auth/getName/${response.data.user.licenseId}`);
+      const userResponse = await axios.get(`https://business-portal-app.onrender.com/api/auth/getName/${response.data.user.licenseId}`);
 
 
       const {token} = response.data;
