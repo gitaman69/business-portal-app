@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Backend server for billing application",
     "main": "server.js",
+    "type": "commonjs",
     "scripts": {
         "start": "node backend/server.js",
         "dev": "node backend/server.js",
