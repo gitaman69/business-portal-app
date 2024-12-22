@@ -13,7 +13,7 @@ const app = express();
 const _dirname = path.resolve();
 
 const corsOptions = {
-  origin:"https://business-portal-app-plum.vercel.app/",
+  origin:"https://business-portal-app-plum.vercel.app",
   credentials:true
 }
 
