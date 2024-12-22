@@ -4,10 +4,10 @@ const authMiddleware = require('../Middleware/middleware');
 const router = express.Router();
 
 // Login route
-router.post('/login',authMiddleware, loginUser);
+router.post('/login', loginUser);
 
 // Signup route
-router.post('/signup',authMiddleware, registerUser);
+router.post('/signup', registerUser);
 
 //send email
 router.post('/send-email',sendEmail);
@@ -22,7 +22,7 @@ router.get('/product/:barcode',authMiddleware, getProduct);
 router.get('/allProducts',authMiddleware,getAllData);
 
 //get full Name
-router.get('/getName/:licenseId',authMiddleware,fullName);
+router.get('/getName/:licenseId',fullName);
 
 //new TUser
 router.post('/users',authMiddleware,TNewUsers);
