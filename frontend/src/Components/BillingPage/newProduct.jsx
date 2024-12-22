@@ -12,7 +12,7 @@ export default function NewProductForm({ barcode, onClose, onProductAdded }) {
     e.preventDefault()
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch('https://business-portal-app.onrender.com/api/auth/addProduct', {
+      const response = await fetch('https://business-portal-app-plum.vercel.app/api/auth/addProduct', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

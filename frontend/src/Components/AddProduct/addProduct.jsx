@@ -25,7 +25,7 @@ export default function ProductManagement() {
     e.preventDefault()
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch('https://business-portal-app.onrender.com/api/auth/addProduct', {
+      const response = await fetch('https://business-portal-app-plum.vercel.app/api/auth/addProduct', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ export default function ProductManagement() {
       for (const row of jsonData) {
         try {
           const token = localStorage.getItem('authToken')
-          const response = await fetch('https://business-portal-app.onrender.com/api/auth/addProduct', {
+          const response = await fetch('https://business-portal-app-plum.vercel.app/api/auth/addProduct', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

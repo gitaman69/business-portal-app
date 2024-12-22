@@ -14,7 +14,7 @@ export default function BillingPage() {
     try {
       const token = localStorage.getItem('authToken');
       const response = await fetch(
-        `https://business-portal-app.onrender.com/api/auth/product/${barcode}`,{
+        `https://business-portal-app-plum.vercel.app/api/auth/product/${barcode}`,{
           headers: {
             Authorization: `Bearer ${token}`,
           },
