@@ -14,7 +14,7 @@ export default function BillingPage() {
     try {
       const token = localStorage.getItem('authToken');
       const response = await fetch(
-        `https://business-portal-app.onrender.com/api/auth/product/${barcode}`,{
+        `${process.env.REACT_APP_BACKEND_URL}/api/auth/product/${barcode}`,{
           headers: {
             Authorization: `Bearer ${token}`,
           },

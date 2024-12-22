@@ -27,7 +27,7 @@ export default function SignUpPage() {
 
     try {
       // Send the email to the backend to trigger sending the welcome email
-      await axios.post("https://business-portal-app.onrender.com/api/auth/send-email", {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/send-email`, {
         email: e.target.email.value,
       });
     } catch (error) {
@@ -35,7 +35,7 @@ export default function SignUpPage() {
     }
 
     try {
-      const response = await axios.post("https://business-portal-app.onrender.com/api/auth/signup", {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/signup`, {
         name: formData.name,
         email: formData.email,
         password: formData.password,

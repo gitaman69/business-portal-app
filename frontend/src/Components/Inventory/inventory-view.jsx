@@ -15,7 +15,7 @@ export default function InventoryView() {
       if (!token) {
         throw new Error('No token found. Please log in again.')
       }
-      const response = await fetch('https://business-portal-app.onrender.com/api/auth/allProducts',{
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/allProducts`,{
         headers: {
           Authorization: `Bearer ${token}`,
         }

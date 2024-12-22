@@ -22,7 +22,7 @@ router.get('/product/:barcode',authMiddleware, getProduct);
 router.get('/allProducts',authMiddleware,getAllData);
 
 //get full Name
-router.get('/getName/:licenseId',fullName);
+router.get('/getName/:licenseId',authMiddleware,fullName);
 
 //new TUser
 router.post('/users',authMiddleware,TNewUsers);

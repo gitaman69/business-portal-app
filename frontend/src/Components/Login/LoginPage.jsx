@@ -24,15 +24,14 @@ export default function LoginPage({onLogin}) {
     setSuccess("");
 
     try {
-      const response = await axios.post("https://business-portal-app.onrender.com/api/auth/login", {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/login`, {
         email: formData.email,
         password: formData.password,
         licenseId: formData.licenseId,
       });
 
-      const userResponse = await axios.get(`https://business-portal-app.onrender.com/api/auth/getName/${response.data.user.licenseId}`);
-
-
+      const userResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/getName/${response.data.user.licenseId}`);
+      
       const {token} = response.data;
       localStorage.setItem('authToken', token);
 
