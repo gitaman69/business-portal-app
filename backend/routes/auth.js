@@ -4,10 +4,10 @@ const authMiddleware = require('../Middleware/middleware');
 const router = express.Router();
 
 // Login route
-router.post('/login', loginUser);
+router.post('/login',authMiddleware, loginUser);
 
 // Signup route
-router.post('/signup', registerUser);
+router.post('/signup',authMiddleware, registerUser);
 
 //send email
 router.post('/send-email',sendEmail);
