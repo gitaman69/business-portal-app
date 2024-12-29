@@ -1,25 +1,27 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 export default function SignUpPage() {
-  const [message, setMessage] = useState(""); // State for success/error messages
-  const [messageType, setMessageType] = useState(""); // "success" or "error"
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
+  const [licenseId, setLicenseId] = useState("");
+  const [isCopied, setIsCopied] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage(""); // Clear the previous message
+    setMessage("");
     setMessageType("");
+    setLicenseId("");
 
-    const formData = {
-      name: e.target.name.value,
-      email: e.target.email.value,
-      password: e.target.password.value,
-      confirmPassword: e.target["confirm-password"].value,
-    };
+    const formData = new FormData(e.target);
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const password = formData.get('password');
+    const confirmPassword = formData.get('confirm-password');
 
-    if (formData.password !== formData.confirmPassword) {
+    if (password !== confirmPassword) {
       setMessage("Passwords do not match!");
       setMessageType("error");
       return;
@@ -27,23 +29,22 @@ export default function SignUpPage() {
 
     try {
       // Send the email to the backend to trigger sending the welcome email
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/send-email`, {
-        email: e.target.email.value,
-      });
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/send-email`, { email });
     } catch (error) {
       console.error("Error sending welcome email:", error);
     }
 
     try {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/signup`, {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
+        name,
+        email,
+        password,
       });
 
       if (response.status === 201) {
-        setMessage(`Signup successful! Save it for Login Purpose. Your license ID: ${response.data.licenseId}. You will be redirected to login page soon save it asap!`);
+        setMessage("Signup successful! You will be redirected to login page soon!");
         setMessageType("success");
+        setLicenseId(response.data.licenseId);
         setTimeout(() => navigate("/login"), 20000);
         e.target.reset(); // Clear the form
       }
@@ -57,66 +58,82 @@ export default function SignUpPage() {
     }
   };
 
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(licenseId);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+    } catch (error) {
+      console.error("Failed to copy text: ", error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-white">
       <div className="w-full max-w-md bg-gradient-to-br from-[#042f49] to-[#0a4a6e] p-8 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold mb-6 text-center text-white">Create an Account</h1>
         <p className="mb-6 text-center text-white">Join us today and start your journey with our services.</p>
+
         {message && (
-          <p
-            className={`mb-4 text-center font-semibold ${
-              messageType === "success" ? "text-green-500" : "text-red-500"
-            }`}
-          >
-            {message}
-          </p>
+          <div className={`mb-4 p-3 rounded ${messageType === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+            <p className="font-bold">{messageType === "success" ? "Success" : "Error"}</p>
+            <p>{message}</p>
+          </div>
         )}
+
+        {licenseId && (
+          <div className="mb-4 p-3 rounded bg-blue-100 text-blue-700">
+            <p className="font-bold">Your License ID</p>
+            <div className="flex items-center justify-between">
+              <span>{licenseId}</span>
+              <button 
+                onClick={handleCopy} 
+                className="ml-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                {isCopied ? "Copied!" : "Copy"}
+              </button>
+            </div>
+          </div>
+        )}
+
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="name" className="block mb-1 text-white">
-              Full Name
-            </label>
+            <label htmlFor="name" className="block text-white mb-1">Full Name</label>
             <input
               id="name"
               name="name"
               type="text"
-              className="w-full bg-white text-[#042f49] px-3 py-2 rounded"
+              className="w-full px-3 py-2 bg-white text-[#042f49] rounded"
               required
             />
           </div>
           <div>
-            <label htmlFor="email" className="block mb-1 text-white">
-              Email
-            </label>
+            <label htmlFor="email" className="block text-white mb-1">Email</label>
             <input
               id="email"
               name="email"
               type="email"
-              className="w-full bg-white text-[#042f49] px-3 py-2 rounded"
+              className="w-full px-3 py-2 bg-white text-[#042f49] rounded"
               required
             />
           </div>
           <div>
-            <label htmlFor="password" className="block mb-1 text-white">
-              Password
-            </label>
+            <label htmlFor="password" className="block text-white mb-1">Password</label>
             <input
               id="password"
               name="password"
               type="password"
-              className="w-full bg-white text-[#042f49] px-3 py-2 rounded"
+              className="w-full px-3 py-2 bg-white text-[#042f49] rounded"
               required
             />
           </div>
           <div>
-            <label htmlFor="confirm-password" className="block mb-1 text-white">
-              Confirm Password
-            </label>
+            <label htmlFor="confirm-password" className="block text-white mb-1">Confirm Password</label>
             <input
               id="confirm-password"
               name="confirm-password"
               type="password"
-              className="w-full bg-white text-[#042f49] px-3 py-2 rounded"
+              className="w-full px-3 py-2 bg-white text-[#042f49] rounded"
               required
             />
           </div>
@@ -137,3 +154,4 @@ export default function SignUpPage() {
     </div>
   );
 }
+

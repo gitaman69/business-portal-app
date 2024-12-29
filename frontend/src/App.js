@@ -8,6 +8,8 @@ import BillingPage from './Components/BillingPage/billingPage';
 import ProductManagement from './Components/AddProduct/addProduct';
 import InventoryView from './Components/Inventory/inventory-view';
 import ExpenseTracker from './Components/ExpenseTracker/ExpenseTracker';
+import AddBillData from './Components/AddBillData/AddBillData';
+import SeeBillData from './Components/GetBillData/GetBillData';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -43,6 +45,8 @@ function App() {
           <Route path="/addProduct" element={<ProtectedRoute><ProductManagement/></ProtectedRoute> } />
           <Route path="/inventory" element={<ProtectedRoute><InventoryView/></ProtectedRoute>} />
           <Route path="/expenseTracker" element={<ProtectedRoute><ExpenseTracker/></ProtectedRoute>} />
+          <Route path="/add-bill-data" element={<ProtectedRoute><AddBillData/></ProtectedRoute>} />
+          <Route path="/see-bill-data" element={<ProtectedRoute><SeeBillData/></ProtectedRoute>} />
         </Route>
       </Routes>
     </Router>

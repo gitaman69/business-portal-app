@@ -51,8 +51,21 @@ const Header = ({ user, onLogout }) => {
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
                   <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
                     <div className="font-semibold">{user.fullName}</div>
-                    <div className="text-green-500 font-bold ">License ID: {user.licenseId || "N/A"}</div>
+                    <div className="text-green-500 font-bold">License ID: {user.licenseId || "N/A"}</div>
                   </div>
+                  {/* Add Bill Data and See Bill Data buttons */}
+                  <Link
+                    to="/add-bill-data"
+                    className="block w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-gray-100 transition duration-200"
+                  >
+                    Add Bill Data
+                  </Link>
+                  <Link
+                    to="/see-bill-data"
+                    className="block w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-gray-100 transition duration-200"
+                  >
+                    See Bill Data
+                  </Link>
                   <button
                     onClick={() => {
                       onLogout();

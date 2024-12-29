@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import NewProductForm from "./newProduct";
@@ -8,17 +9,42 @@ export default function BillingPage() {
   const [billItems, setBillItems] = useState([]);
   const [showNewProductForm, setShowNewProductForm] = useState(false);
   const [toast, setToast] = useState(null);
+  const [billData, setBillData] = useState({});
+
+  useEffect(() => {
+    const fetchBillData = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/auth/get-bill-data`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setBillData(response.data[0]);
+      } catch (error) {
+        console.error("Error fetching bill data:", error);
+        alert("Failed to fetch bill data");
+      }
+    };
+
+    fetchBillData();
+  }, []);
 
   const handleBarcodeSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem("authToken");
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/auth/product/${barcode}`,{
+        `${process.env.REACT_APP_BACKEND_URL}/api/auth/product/${barcode}`,
+        {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        });
+        }
+      );
       if (response.ok) {
         const product = await response.json();
         setBillItems([...billItems, { ...product, quantity: 1 }]);
@@ -56,27 +82,22 @@ export default function BillingPage() {
     return (price * gstRate) / (100 + gstRate); // GST portion included in the price
   };
 
-  const printBill = () => {
+  const printBill = async () => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
 
-    // Add logo (replace with your actual logo)
-    //const logoWidth = 40;
-    //const logoHeight = 40;
-    //doc.addImage('', 'PNG', 10, 10, logoWidth, logoHeight);
-
     // Add store name and details
     doc.setFontSize(22);
     doc.setTextColor(44, 62, 80); // Dark blue color
-    doc.text("Your Store Name", pageWidth / 2, 20, { align: "center" });
+    doc.text(`${billData.storeName}`, pageWidth / 2, 20, { align: "center" });
     doc.setFontSize(10);
     doc.setTextColor(52, 73, 94); // Slightly lighter blue
-    doc.text("123 Store Street, City, Country", pageWidth / 2, 30, {
+    doc.text(`${billData.storeAddress}`, pageWidth / 2, 30, {
       align: "center",
     });
     doc.text(
-      "Phone: +1 234 567 890 | Email: store@example.com",
+      `Contact: ${billData.storeContact} | Email: ${billData.storeMail}`,
       pageWidth / 2,
       35,
       { align: "center" }

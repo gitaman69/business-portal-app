@@ -29,11 +29,15 @@ export default function LoginPage({onLogin}) {
         password: formData.password,
         licenseId: formData.licenseId,
       });
-
-      const userResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/getName/${response.data.user.licenseId}`);
       
       const {token} = response.data;
       localStorage.setItem('authToken', token);
+
+      const userResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/getName/${response.data.user.licenseId}`,{
+        headers:{
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.status === 200) {
         const license = response.data.user.licenseId;

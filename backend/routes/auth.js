@@ -1,5 +1,5 @@
 const express = require('express');
-const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, fullName, TNewUsers, newTransaction, TAllUsers, deleteTransaction, deleteTuser } = require('../controllers/authController');
+const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, fullName, TNewUsers, newTransaction, TAllUsers, deleteTransaction, deleteTuser, addBillData, getBillData } = require('../controllers/authController');
 const authMiddleware = require('../Middleware/middleware');
 const router = express.Router();
 
@@ -23,6 +23,12 @@ router.get('/allProducts',authMiddleware,getAllData);
 
 //get full Name
 router.get('/getName/:licenseId',fullName);
+
+//add bill data
+router.post('/add-bill-data',authMiddleware,addBillData);
+
+//get bill data
+router.get('/get-bill-data',authMiddleware,getBillData);
 
 //new TUser
 router.post('/users',authMiddleware,TNewUsers);

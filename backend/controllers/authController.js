@@ -289,6 +289,93 @@ const fullName = async (req, res) => {
   }
 };
 
+// Route to add/store bill data under user-specific database
+const addBillData = async (req, res) => {
+  const { licenseId } = req.user; // Assuming the licenseId is available after authentication
+  const { storeName, storeMail, storeContact, storeAddress } = req.body; // Bill data from request
+
+  try {
+    // Connect to the user's database dynamically using the licenseId
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`; // Mongo URI with user-specific DB name
+    const userDB = await mongoose.createConnection(userDBURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    // Create the BillData model for the specific user database
+    const BillDataModel = userDB.model("BillData", BillData.schema);
+
+    // Check if a bill data record already exists
+    let existingBillData = await BillDataModel.findOne();
+
+    if (existingBillData) {
+      // Update the existing record
+      existingBillData.storeName = storeName;
+      existingBillData.storeMail = storeMail;
+      existingBillData.storeContact = storeContact;
+      existingBillData.storeAddress = storeAddress;
+
+      // Save the updated data
+      await existingBillData.save();
+
+      res.status(200).json({
+        message: "Bill data updated successfully",
+        data: existingBillData,
+      });
+    } else {
+      // Create a new bill data record (only if none exists)
+      const newBillData = new BillDataModel({
+        storeName,
+        storeMail,
+        storeContact,
+        storeAddress,
+      });
+
+      // Save the new bill data to the database
+      await newBillData.save();
+
+      res
+        .status(201)
+        .json({ message: "Bill data added successfully", data: newBillData });
+    }
+  } catch (error) {
+    console.error("Error adding or updating bill data:", error);
+    res
+      .status(500)
+      .json({
+        message: "Failed to add or update bill data",
+        error: error.message,
+      });
+  }
+};
+
+// Route to get Bill Data for the authenticated user
+const getBillData = async (req, res) => {
+  const { licenseId } = req.user; // Assuming the licenseId is available after authentication
+
+  try {
+    // Connect to the user's database dynamically using the licenseId
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`; // Mongo URI with user-specific DB name
+    const userDB = await mongoose.createConnection(userDBURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    // Create the BillData model for the specific user database
+    const BillDataModel = userDB.model("BillData", BillData.schema);
+
+    // Get the bill data for the user
+    const billData = await BillDataModel.find();
+
+    res.status(200).json(billData);
+  } catch (error) {
+    console.error("Error fetching bill data:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch bill data", error: error.message });
+  }
+};
+
 // Create a new user
 const TNewUsers = async (req, res) => {
   try {
@@ -413,4 +500,6 @@ module.exports = {
   TAllUsers,
   deleteTransaction,
   deleteTuser,
+  addBillData,
+  getBillData,
 };
