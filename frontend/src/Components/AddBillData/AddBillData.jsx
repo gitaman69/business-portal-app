@@ -21,7 +21,7 @@ const AddBillData = () => {
 
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/auth/add-bill-data`,
         formData,
         {
