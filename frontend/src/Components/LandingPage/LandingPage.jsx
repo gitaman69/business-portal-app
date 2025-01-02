@@ -84,9 +84,15 @@ const LandingPage = () => {
               </svg>
             </button>
           </Link>
-          <button className="border border-blue-600 text-blue-600 px-6 py-3 rounded-md text-lg font-semibold hover:bg-blue-50 transition-colors">
-            Watch Demo
-          </button>
+          <a
+            href="https://youtube.com/shorts/quftRzeI7HA?si=88GQKuyAS3gU9x-G" // Replace with your actual YouTube link
+            target="_blank" // Opens the link in a new tab
+            rel="noopener noreferrer" // Ensures security and performance
+          >
+            <button className="border border-blue-600 text-blue-600 px-6 py-3 rounded-md text-lg font-semibold hover:bg-blue-50 transition-colors">
+              Watch Demo
+            </button>
+          </a>
         </section>
 
         <section className="grid md:grid-cols-3 gap-8 mb-16">
