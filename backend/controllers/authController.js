@@ -24,37 +24,55 @@ const sendEmail = async (req, res) => {
   const { email, name } = req.body; // Assuming you want to personalize the email with a name.
 
   const mailOptions = {
-    from: process.env.User,
+    from: process.env.USER,
     to: email,
-    subject: "Welcome to Our Service",
-    text: `Hello ${
-      name || "User"
-    },\n\nThank you for signing up with us! We're thrilled to have you on board.\nExplore amazing rental opportunities and find your perfect home with ease.\nVisit us at https://cityrentals.site\n\nBest Regards,\nCity Rentals Team`,
+    subject: "Welcome to Bill-Ease",
+    text: `Hello ${name || "User"},
+  
+  Thank you for joining Bill-Ease! Managing your expenses and tracking your finances has never been easier.
+  
+  With Bill-Ease, you can:
+  - Organize your expenses effortlessly.
+  - Monitor all your transactions in one place.
+  - Gain financial insights to make smarter decisions.
+  
+  Start your journey toward financial ease today!
+  Visit us at https://business-portal-app.onrender.com
+  
+  Download the Bill-Ease app: https://business-portal-app.onrender.com/download-apk
+  Log in to your account: https://business-portal-app.onrender.com/login
+  
+  Best Regards,
+  The Bill-Ease Team`,
+  
     html: `
       <html>
-        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-          <div style="max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-            <header style="background-color: #4CAF50; color: white; padding: 20px; text-align: center;">
-              <h1>Welcome to City Rentals</h1>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+          <div style="max-width: 600px; margin: auto; background: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <header style="background-color: #1E90FF; color: white; padding: 20px; text-align: center;">
+              <h1>Welcome to Bill-Ease</h1>
             </header>
             <div style="padding: 20px;">
               <h2>Hello ${name || "User"},</h2>
-              <p>Thank you for signing up with us! We're thrilled to have you on board.</p>
-              <p>Explore amazing rental opportunities and find your perfect home with ease.</p>
-              <a href="https://cityrentals.site" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">Visit Our Website</a>
+              <p>Thank you for joining Bill-Ease! Managing your expenses and tracking your finances has never been easier.</p>
+              <p>With Bill-Ease, you can:</p>
+              <ul style="padding-left: 20px;">
+                <li>Organize your expenses effortlessly.</li>
+                <li>Monitor all your transactions in one place.</li>
+                <li>Gain financial insights to make smarter decisions.</li>
+              </ul>
+              <p>Start your journey toward financial ease today!</p>
+              <a href="https://business-portal-app.onrender.com/download-apk" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #1E90FF; color: white; text-decoration: none; border-radius: 4px;">Download App</a>
+              <a href="https://business-portal-app.onrender.com/login" style="display: inline-block; margin-top: 20px; margin-left: 10px; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">Log In</a>
             </div>
             <footer style="background-color: #f1f1f1; text-align: center; padding: 10px; font-size: 14px; color: #666;">
-              <p>&copy; 2024 City Rentals. All rights reserved.</p>
-              <p>
-                <a href="https://cityrentals.site/privacy-policy" style="color: #4CAF50; text-decoration: none;">Privacy Policy</a> | 
-                <a href="https://cityrentals.site/contact" style="color: #4CAF50; text-decoration: none;">Contact Us</a>
-              </p>
+              <p>&copy; 2024 Bill-Ease. All rights reserved.</p>
             </footer>
           </div>
         </body>
       </html>
     `,
-  };
+  };  
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
