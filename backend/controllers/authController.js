@@ -39,7 +39,7 @@ const sendEmail = async (req, res) => {
   Start your journey toward financial ease today!
   Visit us at https://business-portal-app.onrender.com
   
-  Download the Bill-Ease app: https://business-portal-app.onrender.com/download-apk
+  Download the Bill-Ease app: https://drive.google.com/file/d/1aVKqi-zhZrX3uaM1kRQA1K_9TX-1L0iD/view?usp=drive_link
   Log in to your account: https://business-portal-app.onrender.com/login
   
   Best Regards,
@@ -62,7 +62,7 @@ const sendEmail = async (req, res) => {
                 <li>Gain financial insights to make smarter decisions.</li>
               </ul>
               <p>Start your journey toward financial ease today!</p>
-              <a href="https://business-portal-app.onrender.com/download-apk" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #1E90FF; color: white; text-decoration: none; border-radius: 4px;">Download App</a>
+              <a href="https://drive.google.com/file/d/1aVKqi-zhZrX3uaM1kRQA1K_9TX-1L0iD/view?usp=drive_link" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #1E90FF; color: white; text-decoration: none; border-radius: 4px;">Download App</a>
               <a href="https://business-portal-app.onrender.com/login" style="display: inline-block; margin-top: 20px; margin-left: 10px; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">Log In</a>
             </div>
             <footer style="background-color: #f1f1f1; text-align: center; padding: 10px; font-size: 14px; color: #666;">
