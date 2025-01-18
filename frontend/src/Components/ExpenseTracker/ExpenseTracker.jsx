@@ -10,7 +10,7 @@ const ExpenseTracker = () => {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/users`, {
+      const response = await axios.get("http://localhost:5000/api/auth/users", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,7 +39,7 @@ const ExpenseTracker = () => {
     try {
       const token = localStorage.getItem("authToken");
       const { data } = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/auth/users`,
+        "http://localhost:5000/api/auth/users",
         newUser,
         {
           headers: {
@@ -64,7 +64,7 @@ const ExpenseTracker = () => {
       const token = localStorage.getItem("authToken");
       const transaction = transactions[userId];
       const { data } = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/auth/users/${userId}/transactions`,
+        `http://localhost:5000/api/auth/users/${userId}/transactions`,
         transaction,
         {
           headers: {
@@ -89,7 +89,7 @@ const ExpenseTracker = () => {
     try {
       const token = localStorage.getItem("authToken");
       await axios.delete(
-        `${process.env.REACT_APP_BACKEND_URL}/api/auth/users/${userId}/transactions/${index}`,
+        `http://localhost:5000/api/auth/users/${userId}/transactions/${index}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -113,8 +113,8 @@ const ExpenseTracker = () => {
   // Delete user and their transactions
   const handleDeleteUser = async (userId) => {
     try {
-      const token = localStorage.getItem('authToken');
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/auth/users/${userId}`, {
+      const token = localStorage.getItem("authToken");
+      await axios.delete(`http://localhost:5000/api/auth/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -146,7 +146,9 @@ const ExpenseTracker = () => {
       .map(
         (tx, index) => `${index + 1}. ${tx.type.toUpperCase()} Rs. ${tx.amount}`
       )
-      .join("\n")}\n\nYou can make your payment to the following UPI ID: ${upiId}`;
+      .join(
+        "\n"
+      )}\n\nYou can make your payment to the following UPI ID: ${upiId}`;
 
     const phoneNumber = user.mobile;
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
@@ -183,102 +185,105 @@ const ExpenseTracker = () => {
         </button>
       </div>
 
-      {/* User List */}
-      {users &&
-        Array.isArray(users) &&
-        users.map((user) => (
-          <div key={user._id} className="bg-white p-4 rounded shadow mb-4">
-            <h2 className="text-lg font-bold">{user.name}</h2>
-            <p className="text-gray-500">{user.mobile}</p>
+      <div className="container mx-auto px-4 py-6">
+        {/* User List */}
+        {users &&
+          Array.isArray(users) &&
+          users.map((user) => (
+            <div key={user._id} className="bg-white p-4 rounded shadow mb-4">
+              {/* User Info */}
+              <h2 className="text-lg font-bold">{user.name}</h2>
+              <p className="text-gray-500">{user.mobile}</p>
 
-            {/* Delete User Button */}
-            <button
-              onClick={() => handleDeleteUser(user._id)}
-              className="text-white-500 hover:underline bg-red-500 rounded-md px-3 mt-4"
-            >
-              Delete User
-            </button>
-
-            {/* Transactions */}
-            <div className="mt-4">
-              {user.transactions.map((tx, index) => (
-                <div
-                  key={index}
-                  className={`flex justify-between items-center p-2 rounded ${
-                    tx.type === "lent" ? "bg-red-100" : "bg-green-100"
-                  }`}
-                >
-                  <span>
-                    {tx.type === "lent" ? "💰 Lent" : "💸 Received"}: ₹
-                    {tx.amount}
-                  </span>
-                  <button
-                    onClick={() => handleDeleteTransaction(user._id, index)}
-                    className="text-white-500 hover:underline bg-red-500 rounded-md px-3"
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* Net Amount */}
-            <div className="mt-4 text-right font-bold">
-              Net Amount: ₹{calculateNetAmount(user)}{" "}
-              {calculateNetAmount(user) < 0 ? "(Negative)" : "(Positive)"}
-            </div>
-
-            {/* Add Transaction */}
-            <div className="flex gap-2 mt-4">
-              <select
-                value={transactions[user._id]?.type || ""}
-                onChange={(e) =>
-                  setTransactions({
-                    ...transactions,
-                    [user._id]: {
-                      ...transactions[user._id],
-                      type: e.target.value,
-                    },
-                  })
-                }
-                className="p-2 border rounded"
-              >
-                <option value="">Type</option>
-                <option value="lent">Lent</option>
-                <option value="received">Received</option>
-              </select>
-              <input
-                type="number"
-                placeholder="Amount"
-                value={transactions[user._id]?.amount || ""}
-                onChange={(e) =>
-                  setTransactions({
-                    ...transactions,
-                    [user._id]: {
-                      ...transactions[user._id],
-                      amount: e.target.value,
-                    },
-                  })
-                }
-                className="p-2 border rounded"
-              />
+              {/* Delete User Button */}
               <button
-                onClick={() => handleAddTransaction(user._id)}
-                className="px-4 py-2 bg-green-500 text-white rounded"
+                onClick={() => handleDeleteUser(user._id)}
+                className="bg-red-500 text-white hover:bg-red-600 rounded-md px-4 py-2 mt-4 w-full sm:w-auto"
               >
-                Add Transaction
+                Delete User
+              </button>
+
+              {/* Transactions */}
+              <div className="mt-4">
+                {user.transactions.map((tx, index) => (
+                  <div
+                    key={index}
+                    className={`flex flex-col sm:flex-row justify-between items-center p-2 rounded ${
+                      tx.type === "lent" ? "bg-red-100" : "bg-green-100"
+                    }`}
+                  >
+                    <span className="text-sm sm:text-base">
+                      {tx.type === "lent" ? "💰 Lent" : "💸 Received"}: ₹
+                      {tx.amount}
+                    </span>
+                    <button
+                      onClick={() => handleDeleteTransaction(user._id, index)}
+                      className="bg-red-500 text-white hover:bg-red-600 rounded-md px-4 py-2 mt-2 sm:mt-0 sm:ml-2"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Net Amount */}
+              <div className="mt-4 text-right font-bold text-sm sm:text-base">
+                Net Amount: ₹{calculateNetAmount(user)}{" "}
+                {calculateNetAmount(user) < 0 ? "(Negative)" : "(Positive)"}
+              </div>
+
+              {/* Add Transaction */}
+              <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                <select
+                  value={transactions[user._id]?.type || ""}
+                  onChange={(e) =>
+                    setTransactions({
+                      ...transactions,
+                      [user._id]: {
+                        ...transactions[user._id],
+                        type: e.target.value,
+                      },
+                    })
+                  }
+                  className="p-2 border rounded w-full sm:w-auto"
+                >
+                  <option value="">Type</option>
+                  <option value="lent">Lent</option>
+                  <option value="received">Received</option>
+                </select>
+                <input
+                  type="number"
+                  placeholder="Amount"
+                  value={transactions[user._id]?.amount || ""}
+                  onChange={(e) =>
+                    setTransactions({
+                      ...transactions,
+                      [user._id]: {
+                        ...transactions[user._id],
+                        amount: e.target.value,
+                      },
+                    })
+                  }
+                  className="p-2 border rounded w-full sm:w-auto"
+                />
+                <button
+                  onClick={() => handleAddTransaction(user._id)}
+                  className="px-4 py-2 bg-green-500 text-white hover:bg-green-600 rounded w-full sm:w-auto"
+                >
+                  Add Transaction
+                </button>
+              </div>
+
+              {/* Send WhatsApp Message */}
+              <button
+                onClick={() => sendWhatsAppMessage(user)}
+                className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded mt-4 w-full sm:w-auto"
+              >
+                Send to WhatsApp
               </button>
             </div>
-
-            {/* Send WhatsApp Message */}
-            <button
-              onClick={() => sendWhatsAppMessage(user)}
-              className="px-4 py-2 bg-blue-500 text-white rounded mt-4"
-            >
-              Send to WhatsApp
-            </button>
-          </div>
-        ))}
+          ))}
+      </div>
     </div>
   );
 };
