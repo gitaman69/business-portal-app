@@ -10,7 +10,7 @@ const ExpenseTracker = () => {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await axios.get("http://localhost:5000/api/auth/users", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,7 +39,7 @@ const ExpenseTracker = () => {
     try {
       const token = localStorage.getItem("authToken");
       const { data } = await axios.post(
-        "http://localhost:5000/api/auth/users",
+        `${process.env.REACT_APP_BACKEND_URL}/api/auth/users`,
         newUser,
         {
           headers: {
@@ -64,7 +64,7 @@ const ExpenseTracker = () => {
       const token = localStorage.getItem("authToken");
       const transaction = transactions[userId];
       const { data } = await axios.post(
-        `http://localhost:5000/api/auth/users/${userId}/transactions`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/auth/users/${userId}/transactions`,
         transaction,
         {
           headers: {
@@ -89,7 +89,7 @@ const ExpenseTracker = () => {
     try {
       const token = localStorage.getItem("authToken");
       await axios.delete(
-        `http://localhost:5000/api/auth/users/${userId}/transactions/${index}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/auth/users/${userId}/transactions/${index}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -114,7 +114,7 @@ const ExpenseTracker = () => {
   const handleDeleteUser = async (userId) => {
     try {
       const token = localStorage.getItem("authToken");
-      await axios.delete(`http://localhost:5000/api/auth/users/${userId}`, {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/auth/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
