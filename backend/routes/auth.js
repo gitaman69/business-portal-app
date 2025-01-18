@@ -1,5 +1,5 @@
 const express = require('express');
-const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, fullName, TNewUsers, newTransaction, TAllUsers, deleteTransaction, deleteTuser, addBillData, getBillData } = require('../controllers/authController');
+const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, fullName, TNewUsers, newTransaction, TAllUsers, deleteTransaction, deleteTuser, addBillData, getBillData, sendFeedback } = require('../controllers/authController');
 const authMiddleware = require('../Middleware/middleware');
 const router = express.Router();
 
@@ -11,6 +11,9 @@ router.post('/signup', registerUser);
 
 //send email
 router.post('/send-email',sendEmail);
+
+//send-feedback
+router.post('/send-feedback',sendFeedback);
 
 //add product
 router.post('/addProduct',authMiddleware, addProduct);

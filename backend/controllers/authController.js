@@ -82,6 +82,39 @@ const sendEmail = async (req, res) => {
   });
 };
 
+// Feedback route
+const sendFeedback = async (req, res) => {
+  const { rating, comment } = req.body;
+
+  // Validate input
+  if (!rating || typeof rating !== 'number' || rating < 1 || rating > 5) {
+    return res.status(400).json({ message: 'Invalid rating. It must be a number between 1 and 5.' });
+  }
+
+  try {
+    // Email content
+    const mailOptions = {
+      from: process.env.USER, // Sender's email
+      to: process.env.USER, // Replace with recipient's email
+      subject: 'New Feedback Received',
+      html: `
+        <h3>New Feedback Submission</h3>
+        <p><strong>Rating:</strong> ${rating} stars</p>
+        <p><strong>Comment:</strong> ${comment || 'No comment provided.'}</p>
+      `,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    // Respond with success
+    res.status(200).json({ message: 'Feedback submitted and email sent successfully.' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ message: 'Failed to send feedback. Please try again later.' });
+  }
+};
+
 /// Utility function to generate a random license ID
 const generateLicenseId = () => {
   const chars =
@@ -510,6 +543,7 @@ module.exports = {
   registerUser,
   loginUser,
   sendEmail,
+  sendFeedback,
   addProduct,
   getProduct,
   getAllData,
