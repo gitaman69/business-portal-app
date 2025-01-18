@@ -84,15 +84,9 @@ const LandingPage = () => {
               </svg>
             </button>
           </Link>
-          <a
-            href="https://youtube.com/shorts/quftRzeI7HA?si=88GQKuyAS3gU9x-G" // Replace with your actual YouTube link
-            target="_blank" // Opens the link in a new tab
-            rel="noopener noreferrer" // Ensures security and performance
-          >
-            <button className="border border-blue-600 text-blue-600 px-6 py-3 rounded-md text-lg font-semibold hover:bg-blue-50 transition-colors">
-              Watch Demo
-            </button>
-          </a>
+          <button className="border border-blue-600 text-blue-600 px-6 py-3 rounded-md text-lg font-semibold hover:bg-blue-50 transition-colors">
+            Watch Demo
+          </button>
         </section>
 
         <section className="grid md:grid-cols-3 gap-8 mb-16">
@@ -183,23 +177,23 @@ const LandingPage = () => {
           </div>
         </section>
 
-        <section className="bg-blue-50 rounded-lg p-10 mb-0">
-          <h3 className="text-2xl font-bold mb-4">
+        <section className="bg-blue-50 rounded-lg p-6 md:p-10 mb-0">
+          <h3 className="text-xl md:text-2xl font-bold mb-4 text-center md:text-left">
             Ready to streamline your billing process?
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 mb-6 text-center md:text-left">
             Join thousands of businesses already using BillEase
           </p>
-          <div className="flex max-w-md mx-auto">
+          <div className="flex flex-col md:flex-row max-w-md md:max-w-lg mx-auto">
             <input
               type="email"
               placeholder="Enter your email"
               value={emailInput}
               onChange={handleEmailChange}
-              className="flex-grow px-4 py-2 rounded-l-md border-t border-b border-l border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-grow px-4 py-2 rounded-t-md md:rounded-l-md md:rounded-t-none border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <Link to="/signup">
-              <button className="bg-blue-600 text-white px-6 py-2 rounded-r-md hover:bg-blue-700 transition-colors">
+              <button className="bg-blue-600 text-white px-6 py-2 rounded-b-md md:rounded-r-md md:rounded-b-none hover:bg-blue-700 transition-colors w-full md:w-auto">
                 Get Started
               </button>
             </Link>
