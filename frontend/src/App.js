@@ -10,6 +10,7 @@ import InventoryView from './Components/Inventory/inventory-view';
 import ExpenseTracker from './Components/ExpenseTracker/ExpenseTracker';
 import AddBillData from './Components/AddBillData/AddBillData';
 import SeeBillData from './Components/GetBillData/GetBillData';
+import FeedBackForm from './Components/FeedBackForm/FeedbackForm';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -40,6 +41,7 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route path="/" element={<LandingPage />} />
+        <Route path="/feedback" element={<FeedBackForm/>} />
         <Route element={<HeaderLayout />}>
           <Route path="/dashboard" element={<ProtectedRoute><BillingPage/></ProtectedRoute>} />
           <Route path="/addProduct" element={<ProtectedRoute><ProductManagement/></ProtectedRoute> } />

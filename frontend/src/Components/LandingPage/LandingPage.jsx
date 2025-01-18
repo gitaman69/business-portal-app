@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { VscFeedback } from "react-icons/vsc";
 
 const testimonials = [
   {
@@ -198,6 +199,11 @@ const LandingPage = () => {
               </button>
             </Link>
           </div>
+          <Link to="/feedback">
+            <div className="fixed bottom-5 right-5 w-12 h-12 bg-blue-500 text-white flex items-center justify-center rounded-full shadow-lg cursor-pointer hover:scale-110 transition-transform">
+              <VscFeedback />
+            </div>
+          </Link>
         </section>
       </main>
 
