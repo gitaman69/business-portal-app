@@ -9,6 +9,8 @@ const AddBillData = () => {
     storeAddress: "",
   });
 
+  const [toast, setToast] = useState({ message: "", type: "", visible: false });
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -16,11 +18,18 @@ const AddBillData = () => {
     });
   };
 
+  const showToast = (message, type) => {
+    setToast({ message, type, visible: true });
+    setTimeout(() => {
+      setToast({ message: "", type: "", visible: false });
+    }, 3000); // Toast disappears after 3 seconds
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem("authToken");
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/auth/add-bill-data`,
         formData,
@@ -30,15 +39,23 @@ const AddBillData = () => {
           },
         }
       );
-      alert("Bill data added successfully!");
+      showToast("Bill data added successfully!", "success");
+
+      // Optionally reset the form
+      setFormData({
+        storeName: "",
+        storeMail: "",
+        storeContact: "",
+        storeAddress: "",
+      });
     } catch (error) {
       console.error("Error adding bill data:", error);
-      alert("Failed to add bill data");
+      showToast("Failed to add bill data", "error");
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 relative">
       <h1 className="text-2xl font-bold mb-4">Add Bill Data</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -96,6 +113,17 @@ const AddBillData = () => {
           Add Bill Data
         </button>
       </form>
+
+      {/* Custom Toast Component */}
+      {toast.visible && (
+        <div
+          className={`fixed bottom-4 right-4 px-4 py-2 rounded shadow-md text-white ${
+            toast.type === "success" ? "bg-green-500" : "bg-red-500"
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 };

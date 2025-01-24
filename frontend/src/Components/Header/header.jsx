@@ -60,6 +60,12 @@ const Header = ({ user, onLogout }) => {
           >
             Expense Tracker
           </Link>
+          <Link
+            to="/dataEntry"
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300"
+          >
+            Data Entry
+          </Link>
           {/* Conditionally show Billing Page button if not on Billing Page */}
           {!isBillingPage && (
             <Link
@@ -199,6 +205,12 @@ const Header = ({ user, onLogout }) => {
                 className="text-blue-600 hover:text-blue-800"
               >
                 Expense Tracker
+              </Link>
+              <Link
+                to="/dataEntry"
+                className="text-blue-600 hover:text-blue-800"
+              >
+                Data Entry
               </Link>
               {!isBillingPage && (
                 <Link

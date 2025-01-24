@@ -7,6 +7,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
+const BankAccount = require("../models/BankAccount");
+const PaymentMode = require("../models/PaymentMode");
+const Transaction = require("../models/Transaction");
 
 dotenv.config();
 
@@ -126,6 +129,13 @@ const generateLicenseId = () => {
   return licenseId;
 };
 
+// Middleware to dynamically connect to the user's database
+const connectToUserDB = async (licenseId) => {
+  const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+  return await mongoose.createConnection(userDBURI, {
+  });
+};
+
 // Register user
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -151,8 +161,6 @@ const registerUser = async (req, res) => {
     // Dynamically create a database for the user
     const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
     const userDB = await mongoose.createConnection(userDBURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
 
     // Add a dummy product to the newly created database
@@ -203,8 +211,6 @@ const loginUser = async (req, res) => {
     // Connect to the user's specific database
     const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
     const userDB = await mongoose.createConnection(userDBURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
 
     res.status(200).json({
@@ -230,8 +236,6 @@ const addProduct = async (req, res) => {
     // Connect to the user's database dynamically
     const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
     const userDB = await mongoose.createConnection(userDBURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
 
     // Create the Product model for the specific user database
@@ -267,8 +271,6 @@ const getProduct = async (req, res) => {
     // Connect to the user's database dynamically
     const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
     const userDB = await mongoose.createConnection(userDBURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
 
     // Create the Product model for the specific user database
@@ -300,8 +302,6 @@ const getAllData = async (req, res) => {
     // Connect to the user's database dynamically
     const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
     const userDB = await mongoose.createConnection(userDBURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
 
     // Create the Product model for the specific user database
@@ -329,7 +329,7 @@ const fullName = async (req, res) => {
     if (user) {
       // Return the fullName if user exists
       return res.status(200).json({
-        fullName: user.fullName,
+        fullName: user.name,
       });
     } else {
       // User not found
@@ -350,8 +350,6 @@ const addBillData = async (req, res) => {
     // Connect to the user's database dynamically using the licenseId
     const userDBURI = `${process.env.MONGO_URI}-${licenseId}`; // Mongo URI with user-specific DB name
     const userDB = await mongoose.createConnection(userDBURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
 
     // Create the BillData model for the specific user database
@@ -409,8 +407,6 @@ const getBillData = async (req, res) => {
     // Connect to the user's database dynamically using the licenseId
     const userDBURI = `${process.env.MONGO_URI}-${licenseId}`; // Mongo URI with user-specific DB name
     const userDB = await mongoose.createConnection(userDBURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
 
     // Create the BillData model for the specific user database
@@ -539,6 +535,244 @@ const deleteTuser = async (req, res) => {
   }
 };
 
+const addBankAccount = async (req, res) => {
+  const { name, balance } = req.body;
+  const { licenseId } = req.user; // Ensure `req.user` is populated from middleware like JWT
+
+  if (!name || !balance) {
+    return res.status(400).json({ message: 'Name and balance are required' });
+  }
+
+  try {
+    const userDB = await connectToUserDB(licenseId);
+    const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
+
+    const newAccount = new BankAccountModel({ name, balance });
+    await newAccount.save();
+
+    res.status(201).json({ message: 'Bank account added successfully', account: newAccount });
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding bank account', error: error.message });
+  }
+};
+
+const addPaymentMode = async (req, res) => {
+  const { name } = req.body;
+  const { licenseId } = req.user;
+
+  if (!name) {
+    return res.status(400).json({ message: 'Payment mode name is required' });
+  }
+
+  try {
+    const userDB = await connectToUserDB(licenseId);
+    const PaymentModeModel = userDB.model('PaymentMode', PaymentMode.schema);
+
+    const newMode = new PaymentModeModel({ name });
+    await newMode.save();
+
+    res.status(201).json({ message: 'Payment mode added successfully', mode: newMode });
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding payment mode', error: error.message });
+  }
+};
+
+const addBankTransaction = async (req, res) => {
+  const { date, amount, type, mode, account } = req.body; // No need for netBalance from input
+  const { licenseId } = req.user;
+
+  if (!date || !amount || !type || !mode || !account) {
+    return res.status(400).json({ message: 'All transaction fields are required' });
+  }
+
+  try {
+    const userDB = await connectToUserDB(licenseId);
+    const TransactionModel = userDB.model('Transaction', Transaction.schema);
+    const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
+
+    // Convert the amount to a number
+    const parsedAmount = parseFloat(amount);
+
+    if (isNaN(parsedAmount)) {
+      return res.status(400).json({ message: 'Invalid amount' });
+    }
+
+    // Find the bank account
+    const bankAccount = await BankAccountModel.findOne({ name: account });
+    if (!bankAccount) {
+      return res.status(404).json({ message: 'Bank account not found' });
+    }
+
+    // Adjust the balance based on the transaction type (credit or debit)
+    if (type === 'Credit') {
+      bankAccount.balance += parsedAmount; // Add amount for credit transactions
+    } else if (type === 'Debit') {
+      if (bankAccount.balance < parsedAmount) {
+        return res.status(400).json({ message: 'Insufficient funds for debit transaction' });
+      }
+      bankAccount.balance -= parsedAmount; // Subtract amount for debit transactions
+    }
+
+    // Save the updated bank account balance
+    await bankAccount.save();
+
+    // Create a new transaction and save it
+    const newTransaction = new TransactionModel({
+      date,
+      amount: parsedAmount,
+      type,
+      mode,
+      account,
+      netBalance: bankAccount.balance, // Store the updated netBalance
+    });
+    await newTransaction.save();
+
+    res.status(201).json({
+      message: 'Transaction added successfully',
+      transaction: newTransaction, // Return the transaction which includes netBalance
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding transaction', error: error.message });
+  }
+};
+
+
+
+// Delete a bank account
+const deleteBankAccount = async (req, res) => {
+  const { id } = req.params; // Get the account ID from the request params
+  const { licenseId } = req.user; // Get the user's licenseId from the authenticated user
+
+  try {
+    const userDB = await connectToUserDB(licenseId); // Dynamically connect to the user's database
+    const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
+
+    // Find and delete the bank account by ID
+    const deletedAccount = await BankAccountModel.findByIdAndDelete(id);
+
+    if (!deletedAccount) {
+      return res.status(404).json({ message: 'Bank account not found' });
+    }
+
+    res.status(200).json({ message: 'Bank account deleted successfully', account: deletedAccount });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting bank account', error: error.message });
+  }
+};
+
+// Delete a payment mode
+const deletePaymentMode = async (req, res) => {
+  const { id } = req.params; // Get the payment mode ID from the request params
+  const { licenseId } = req.user; // Get the user's licenseId from the authenticated user
+
+  try {
+    const userDB = await connectToUserDB(licenseId); // Dynamically connect to the user's database
+    const PaymentModeModel = userDB.model('PaymentMode', PaymentMode.schema);
+
+    // Find and delete the payment mode by ID
+    const deletedMode = await PaymentModeModel.findByIdAndDelete(id);
+
+    if (!deletedMode) {
+      return res.status(404).json({ message: 'Payment mode not found' });
+    }
+
+    res.status(200).json({ message: 'Payment mode deleted successfully', mode: deletedMode });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting payment mode', error: error.message });
+  }
+};
+
+const getAllBankAccounts = async (req, res) => {
+  const { licenseId } = req.user; // Get the user's licenseId from the authenticated user
+
+  try {
+    const userDB = await connectToUserDB(licenseId); // Dynamically connect to the user's database
+    const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
+
+    const accounts = await BankAccountModel.find(); // Fetch all bank accounts
+    res.status(200).json(accounts);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching bank accounts', error: error.message });
+  }
+};
+
+const getAllPaymentModes = async (req, res) => {
+  const { licenseId } = req.user;
+
+  try {
+    const userDB = await connectToUserDB(licenseId);
+    const PaymentModeModel = userDB.model('PaymentMode', PaymentMode.schema);
+
+    const modes = await PaymentModeModel.find(); // Fetch all payment modes
+    res.status(200).json(modes);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching payment modes', error: error.message });
+  }
+};
+
+const getAllTransactions = async (req, res) => {
+  const { licenseId } = req.user;
+
+  try {
+    const userDB = await connectToUserDB(licenseId);
+    const TransactionModel = userDB.model('Transaction', Transaction.schema);
+
+    const transactions = await TransactionModel.find(); // Fetch all transactions
+    res.status(200).json(transactions);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching transactions', error: error.message });
+  }
+};
+
+const deleteDataTransaction = async (req, res) => {
+  const { transactionId, account } = req.body;
+  const { licenseId } = req.user;
+
+  // Check for missing data
+  if (!transactionId || !account) {
+    return res.status(400).json({ message: 'Transaction ID and account are required' });
+  }
+
+  try {
+    // Ensure the database connection is successful
+    const userDB = await connectToUserDB(licenseId);
+    if (!userDB) {
+      return res.status(500).json({ message: 'Failed to connect to user database' });
+    }
+
+    const TransactionModel = userDB.model('Transaction', Transaction.schema);
+    const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
+
+    // Find and delete the transaction
+    const transaction = await TransactionModel.findByIdAndDelete(transactionId);
+    if (!transaction) {
+      return res.status(404).json({ message: 'Transaction not found' });
+    }
+
+    // Find the bank account
+    const bankAccount = await BankAccountModel.findOne({ name: account });
+    if (!bankAccount) {
+      return res.status(404).json({ message: 'Bank account not found' });
+    }
+
+    // Adjust the balance based on the transaction type
+    if (transaction.type === 'Credit') {
+      bankAccount.balance -= parseFloat(transaction.amount); // Subtract amount for credit
+    } else if (transaction.type === 'Debit') {
+      bankAccount.balance += parseFloat(transaction.amount); // Add amount for debit
+    }
+
+    // Save the updated balance
+    await bankAccount.save();
+
+    // Respond with success message
+    res.status(200).json({ message: 'Transaction deleted and balance updated successfully' });
+  } catch (error) {
+    console.error('Error deleting transaction:', error); // Log the error for debugging
+    res.status(500).json({ message: 'Error deleting transaction', error: error.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -555,4 +789,13 @@ module.exports = {
   deleteTuser,
   addBillData,
   getBillData,
+  addBankAccount,
+  addPaymentMode,
+  addBankTransaction,
+  deleteBankAccount,
+  deletePaymentMode,
+  getAllBankAccounts,
+  getAllPaymentModes,
+  getAllTransactions,
+  deleteDataTransaction
 };

@@ -11,6 +11,7 @@ import ExpenseTracker from './Components/ExpenseTracker/ExpenseTracker';
 import AddBillData from './Components/AddBillData/AddBillData';
 import SeeBillData from './Components/GetBillData/GetBillData';
 import FeedBackForm from './Components/FeedBackForm/FeedbackForm';
+import DataEntry from './Components/DataEntry/DataEntry';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -47,6 +48,7 @@ function App() {
           <Route path="/addProduct" element={<ProtectedRoute><ProductManagement/></ProtectedRoute> } />
           <Route path="/inventory" element={<ProtectedRoute><InventoryView/></ProtectedRoute>} />
           <Route path="/expenseTracker" element={<ProtectedRoute><ExpenseTracker/></ProtectedRoute>} />
+          <Route path="/dataEntry" element={<ProtectedRoute><DataEntry/></ProtectedRoute>} />
           <Route path="/add-bill-data" element={<ProtectedRoute><AddBillData/></ProtectedRoute>} />
           <Route path="/see-bill-data" element={<ProtectedRoute><SeeBillData/></ProtectedRoute>} />
         </Route>

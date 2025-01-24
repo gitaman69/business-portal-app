@@ -1,5 +1,5 @@
 const express = require('express');
-const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, fullName, TNewUsers, newTransaction, TAllUsers, deleteTransaction, deleteTuser, addBillData, getBillData, sendFeedback } = require('../controllers/authController');
+const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, fullName, TNewUsers, newTransaction, TAllUsers, deleteTransaction, deleteTuser, addBillData, getBillData, sendFeedback, addBankAccount, addPaymentMode, addBankTransaction, deleteBankAccount, deletePaymentMode, getAllBankAccounts, getAllPaymentModes, getAllTransactions, deleteDataTransaction } = require('../controllers/authController');
 const authMiddleware = require('../Middleware/middleware');
 const router = express.Router();
 
@@ -47,5 +47,32 @@ router.delete('/users/:userId/transactions/:index',authMiddleware,deleteTransact
 
 //delete Tuser
 router.delete('/users/:userId',authMiddleware,deleteTuser);
+
+// Add a bank account
+router.post('/addBankAccount', authMiddleware, addBankAccount);
+
+// Add a payment mode
+router.post('/addPaymentMode', authMiddleware, addPaymentMode);
+
+// Add a transaction
+router.post('/addTransaction', authMiddleware, addBankTransaction);
+
+// Delete a bank account
+router.delete('/deleteBankAccount/:id', authMiddleware, deleteBankAccount);
+
+// Delete a payment mode
+router.delete('/deletePaymentMode/:id', authMiddleware, deletePaymentMode);
+
+// Get all bank accounts
+router.get('/bankAccounts', authMiddleware, getAllBankAccounts);
+
+// Get all payment modes
+router.get('/paymentModes', authMiddleware, getAllPaymentModes);
+
+// Get all transactions
+router.get('/transactions', authMiddleware, getAllTransactions);
+
+//delete data transaction
+router.delete('/delete-data-transaction',authMiddleware,deleteDataTransaction);
 
 module.exports = router;

@@ -86,7 +86,13 @@ const LandingPage = () => {
             </button>
           </Link>
           <button className="border border-blue-600 text-blue-600 px-6 py-3 rounded-md text-lg font-semibold hover:bg-blue-50 transition-colors">
-            Watch Demo
+            <a
+              href="https://youtube.com/shorts/quftRzeI7HA?si=88GQKuyAS3gU9x-G"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Watch Demo
+            </a>
           </button>
         </section>
 
