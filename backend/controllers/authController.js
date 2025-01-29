@@ -216,18 +216,6 @@ const loginUser = async (req, res) => {
   }
 };
 
-const logoutUser = async (req, res) => {
-  const { licenseId } = req.user;
-
-  try {
-      await disconnectDB(licenseId);
-
-      res.status(200).json({ message: "User logged out successfully" });
-  } catch (error) {
-      res.status(500).json({ message: "Error logging out", error: error.message });
-  }
-};
-
 // Route to add a new product
 const addProduct = async (req, res) => {
   const { product_name, mrp, gst_rate, barcode_number } = req.body;
@@ -798,7 +786,6 @@ const deleteDataTransaction = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
-  logoutUser,
   sendEmail,
   sendFeedback,
   addProduct,

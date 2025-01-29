@@ -1,13 +1,10 @@
 const express = require('express');
-const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, fullName, TNewUsers, newTransaction, TAllUsers, deleteTransaction, deleteTuser, addBillData, getBillData, sendFeedback, addBankAccount, addPaymentMode, addBankTransaction, deleteBankAccount, deletePaymentMode, getAllBankAccounts, getAllPaymentModes, getAllTransactions, deleteDataTransaction, logoutUser } = require('../controllers/authController');
+const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, fullName, TNewUsers, newTransaction, TAllUsers, deleteTransaction, deleteTuser, addBillData, getBillData, sendFeedback, addBankAccount, addPaymentMode, addBankTransaction, deleteBankAccount, deletePaymentMode, getAllBankAccounts, getAllPaymentModes, getAllTransactions, deleteDataTransaction } = require('../controllers/authController');
 const authMiddleware = require('../Middleware/middleware');
 const router = express.Router();
 
 // Login route
 router.post('/login', loginUser);
-
-// Logout route
-router.post('/logout',logoutUser,authMiddleware);
 
 // Signup route
 router.post('/signup', registerUser);
