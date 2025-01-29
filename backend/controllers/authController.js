@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const Product = require("../models/Product");
-const connectDB = require("../config/db");
+const {connectDB} = require("../config/db");
+const {connections} = require("../config/db");
+const { disconnectDB } = require("../config/db");
 const TUsers = require("../models/Tusers");
 const BillData = require("../models/billData");
 const dotenv = require("dotenv");
@@ -13,13 +15,6 @@ const PaymentMode = require("../models/PaymentMode");
 const Transaction = require("../models/Transaction");
 
 dotenv.config();
-
-// Middleware to dynamically connect to the user's database
-const connectToUserDB = async (licenseId) => {
-  const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
-  return await mongoose.createConnection(userDBURI, {
-  });
-};
 
 // Create a transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
@@ -209,10 +204,8 @@ const loginUser = async (req, res) => {
       expiresIn: "1h",
     });
 
-    // Connect to the user's specific database
-    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
-    const userDB = await mongoose.createConnection(userDBURI, {
-    });
+    // Establish DB connection for the user
+    await connectDB(licenseId);
 
     res.status(200).json({
       token,
@@ -220,6 +213,18 @@ const loginUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+const logoutUser = async (req, res) => {
+  const { licenseId } = req.user;
+
+  try {
+      await disconnectDB(licenseId);
+
+      res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+      res.status(500).json({ message: "Error logging out", error: error.message });
   }
 };
 
@@ -234,10 +239,13 @@ const addProduct = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Connect to the user's database dynamically
+    // Get the user-specific DB connection from cache
     const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
-    const userDB = await mongoose.createConnection(userDBURI, {
-    });
+    const userDB = connections[userDBURI];
+
+    if (!userDB) {
+        return res.status(500).json({ message: "Database connection not found" });
+    }
 
     // Create the Product model for the specific user database
     const ProductModel = userDB.model('Product', Product.schema);
@@ -269,10 +277,9 @@ const getProduct = async (req, res) => {
   const { licenseId } = req.user; // Assuming the licenseId is in the user object (from JWT token or session)
   const barcode = req.params.barcode;
   try {
-    // Connect to the user's database dynamically
+    // Get the user-specific DB connection from cache
     const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
-    const userDB = await mongoose.createConnection(userDBURI, {
-    });
+    const userDB = connections[userDBURI];
 
     // Create the Product model for the specific user database
     const ProductModel = userDB.model('Product', Product.schema);
@@ -300,10 +307,9 @@ const getProduct = async (req, res) => {
 const getAllData = async (req, res) => {
   const { licenseId } = req.user; // Assuming the licenseId is in the user object (from JWT token or session)
   try {
-    // Connect to the user's database dynamically
+    // Get the user-specific DB connection from cache
     const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
-    const userDB = await mongoose.createConnection(userDBURI, {
-    });
+    const userDB = connections[userDBURI];
 
     // Create the Product model for the specific user database
     const ProductModel = userDB.model('Product', Product.schema);
@@ -348,10 +354,9 @@ const addBillData = async (req, res) => {
   const { storeName, storeMail, storeContact, storeAddress } = req.body; // Bill data from request
 
   try {
-    // Connect to the user's database dynamically using the licenseId
-    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`; // Mongo URI with user-specific DB name
-    const userDB = await mongoose.createConnection(userDBURI, {
-    });
+    // Get the user-specific DB connection from cache
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+    const userDB = connections[userDBURI];
 
     // Create the BillData model for the specific user database
     const BillDataModel = userDB.model("BillData", BillData.schema);
@@ -405,10 +410,9 @@ const getBillData = async (req, res) => {
   const { licenseId } = req.user; // Assuming the licenseId is available after authentication
 
   try {
-    // Connect to the user's database dynamically using the licenseId
-    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`; // Mongo URI with user-specific DB name
-    const userDB = await mongoose.createConnection(userDBURI, {
-    });
+    // Get the user-specific DB connection from cache
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+    const userDB = connections[userDBURI];
 
     // Create the BillData model for the specific user database
     const BillDataModel = userDB.model("BillData", BillData.schema);
@@ -545,7 +549,9 @@ const addBankAccount = async (req, res) => {
   }
 
   try {
-    const userDB = await connectToUserDB(licenseId);
+    // Get the user-specific DB connection from cache
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+    const userDB = connections[userDBURI];
     const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
 
     const newAccount = new BankAccountModel({ name, balance });
@@ -566,7 +572,9 @@ const addPaymentMode = async (req, res) => {
   }
 
   try {
-    const userDB = await connectToUserDB(licenseId);
+    // Get the user-specific DB connection from cache
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+    const userDB = connections[userDBURI];
     const PaymentModeModel = userDB.model('PaymentMode', PaymentMode.schema);
 
     const newMode = new PaymentModeModel({ name });
@@ -587,7 +595,9 @@ const addBankTransaction = async (req, res) => {
   }
 
   try {
-    const userDB = await connectToUserDB(licenseId);
+    // Get the user-specific DB connection from cache
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+    const userDB = connections[userDBURI];
     const TransactionModel = userDB.model('Transaction', Transaction.schema);
     const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
 
@@ -645,7 +655,9 @@ const deleteBankAccount = async (req, res) => {
   const { licenseId } = req.user; // Get the user's licenseId from the authenticated user
 
   try {
-    const userDB = await connectToUserDB(licenseId); // Dynamically connect to the user's database
+    // Get the user-specific DB connection from cache
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+    const userDB = connections[userDBURI];
     const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
 
     // Find and delete the bank account by ID
@@ -667,7 +679,9 @@ const deletePaymentMode = async (req, res) => {
   const { licenseId } = req.user; // Get the user's licenseId from the authenticated user
 
   try {
-    const userDB = await connectToUserDB(licenseId); // Dynamically connect to the user's database
+    // Get the user-specific DB connection from cache
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+    const userDB = connections[userDBURI];
     const PaymentModeModel = userDB.model('PaymentMode', PaymentMode.schema);
 
     // Find and delete the payment mode by ID
@@ -687,7 +701,9 @@ const getAllBankAccounts = async (req, res) => {
   const { licenseId } = req.user; // Get the user's licenseId from the authenticated user
 
   try {
-    const userDB = await connectToUserDB(licenseId); // Dynamically connect to the user's database
+    // Get the user-specific DB connection from cache
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+    const userDB = connections[userDBURI];
     const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
 
     const accounts = await BankAccountModel.find(); // Fetch all bank accounts
@@ -701,7 +717,9 @@ const getAllPaymentModes = async (req, res) => {
   const { licenseId } = req.user;
 
   try {
-    const userDB = await connectToUserDB(licenseId);
+    // Get the user-specific DB connection from cache
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+    const userDB = connections[userDBURI];
     const PaymentModeModel = userDB.model('PaymentMode', PaymentMode.schema);
 
     const modes = await PaymentModeModel.find(); // Fetch all payment modes
@@ -715,7 +733,9 @@ const getAllTransactions = async (req, res) => {
   const { licenseId } = req.user;
 
   try {
-    const userDB = await connectToUserDB(licenseId);
+    // Get the user-specific DB connection from cache
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+    const userDB = connections[userDBURI];
     const TransactionModel = userDB.model('Transaction', Transaction.schema);
 
     const transactions = await TransactionModel.find(); // Fetch all transactions
@@ -735,8 +755,9 @@ const deleteDataTransaction = async (req, res) => {
   }
 
   try {
-    // Ensure the database connection is successful
-    const userDB = await connectToUserDB(licenseId);
+    // Get the user-specific DB connection from cache
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+    const userDB = connections[userDBURI];
     if (!userDB) {
       return res.status(500).json({ message: 'Failed to connect to user database' });
     }
@@ -777,6 +798,7 @@ const deleteDataTransaction = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  logoutUser,
   sendEmail,
   sendFeedback,
   addProduct,

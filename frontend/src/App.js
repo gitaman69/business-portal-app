@@ -21,7 +21,22 @@ function App() {
   };
 
   const handleLogout = () => {
+    const token = localStorage.getItem("authToken");
     setUser(null);
+    localStorage.removeItem("authToken");
+    // Call backend logout API (if implemented)
+    if (token) {
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include token in header
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => console.log("Logout success:", data))
+        .catch((error) => console.error("Logout error:", error));
+    }
   };
 
   const ProtectedRoute = ({ children }) => {

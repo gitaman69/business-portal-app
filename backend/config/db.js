@@ -17,10 +17,10 @@ const connectDB = async (licenseId) => {
         }
     }
 
-    // Connect to the user database if licenseId is provided
+    // Connect to the user database if not already connected
     if (userDBURI && !connections[userDBURI]) {
         try {
-            connections[userDBURI] = await mongoose.createConnection(userDBURI, {});
+            connections[userDBURI] = mongoose.createConnection(userDBURI, {});
             console.log(`User MongoDB Connected`);
         } catch (err) {
             console.error("User DB connection error:", err);
@@ -29,9 +29,20 @@ const connectDB = async (licenseId) => {
     }
 
     return {
-        mainDB: connections[mainDBURI], 
+        mainDB: connections[mainDBURI],
         userDB: userDBURI ? connections[userDBURI] : null,
     };
 };
 
-module.exports = connectDB;
+// Function to disconnect user-specific database
+const disconnectDB = async (licenseId) => {
+    const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+    
+    if (connections[userDBURI]) {
+        await connections[userDBURI].close();
+        delete connections[userDBURI];
+        console.log(`User MongoDB Disconnected`);
+    }
+};
+
+module.exports = { connectDB, disconnectDB, connections };
