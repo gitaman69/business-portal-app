@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 const corsOptions = {
-  origin: process.evv.REACT_APP_BACKEND_URL,
+  origin: process.env.REACT_APP_BACKEND_URL,
   credentials: true,
 };
 
