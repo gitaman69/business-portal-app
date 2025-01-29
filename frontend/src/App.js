@@ -20,8 +20,9 @@ function App() {
     setUser(userData);
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     setUser(null);
+    localStorage.removeItem("authToken");
   };
 
   const ProtectedRoute = ({ children }) => {
