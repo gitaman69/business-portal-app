@@ -21,7 +21,7 @@ const connectDB = async (licenseId) => {
     if (userDBURI && !connections[userDBURI]) {
         try {
             connections[userDBURI] = await mongoose.createConnection(userDBURI, {});
-            console.log(`User MongoDB Connected: ${userDBURI}`);
+            console.log(`User MongoDB Connected`);
         } catch (err) {
             console.error("User DB connection error:", err);
             throw err;

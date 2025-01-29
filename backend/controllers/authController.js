@@ -14,6 +14,13 @@ const Transaction = require("../models/Transaction");
 
 dotenv.config();
 
+// Middleware to dynamically connect to the user's database
+const connectToUserDB = async (licenseId) => {
+  const userDBURI = `${process.env.MONGO_URI}-${licenseId}`;
+  return await mongoose.createConnection(userDBURI, {
+  });
+};
+
 // Create a transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
   service: "gmail", // or another service like 'yahoo'
@@ -538,7 +545,7 @@ const addBankAccount = async (req, res) => {
   }
 
   try {
-    const userDB = await connectDB(licenseId);
+    const userDB = await connectToUserDB(licenseId);
     const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
 
     const newAccount = new BankAccountModel({ name, balance });
@@ -559,7 +566,7 @@ const addPaymentMode = async (req, res) => {
   }
 
   try {
-    const userDB = await connectDB(licenseId);
+    const userDB = await connectToUserDB(licenseId);
     const PaymentModeModel = userDB.model('PaymentMode', PaymentMode.schema);
 
     const newMode = new PaymentModeModel({ name });
@@ -580,7 +587,7 @@ const addBankTransaction = async (req, res) => {
   }
 
   try {
-    const userDB = await connectDB(licenseId);
+    const userDB = await connectToUserDB(licenseId);
     const TransactionModel = userDB.model('Transaction', Transaction.schema);
     const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
 
@@ -638,7 +645,7 @@ const deleteBankAccount = async (req, res) => {
   const { licenseId } = req.user; // Get the user's licenseId from the authenticated user
 
   try {
-    const userDB = await connectDB(licenseId); // Dynamically connect to the user's database
+    const userDB = await connectToUserDB(licenseId); // Dynamically connect to the user's database
     const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
 
     // Find and delete the bank account by ID
@@ -660,7 +667,7 @@ const deletePaymentMode = async (req, res) => {
   const { licenseId } = req.user; // Get the user's licenseId from the authenticated user
 
   try {
-    const userDB = await connectDB(licenseId); // Dynamically connect to the user's database
+    const userDB = await connectToUserDB(licenseId); // Dynamically connect to the user's database
     const PaymentModeModel = userDB.model('PaymentMode', PaymentMode.schema);
 
     // Find and delete the payment mode by ID
@@ -680,7 +687,7 @@ const getAllBankAccounts = async (req, res) => {
   const { licenseId } = req.user; // Get the user's licenseId from the authenticated user
 
   try {
-    const userDB = await connectDB(licenseId); // Dynamically connect to the user's database
+    const userDB = await connectToUserDB(licenseId); // Dynamically connect to the user's database
     const BankAccountModel = userDB.model('BankAccount', BankAccount.schema);
 
     const accounts = await BankAccountModel.find(); // Fetch all bank accounts
@@ -694,7 +701,7 @@ const getAllPaymentModes = async (req, res) => {
   const { licenseId } = req.user;
 
   try {
-    const userDB = await connectDB(licenseId);
+    const userDB = await connectToUserDB(licenseId);
     const PaymentModeModel = userDB.model('PaymentMode', PaymentMode.schema);
 
     const modes = await PaymentModeModel.find(); // Fetch all payment modes
@@ -708,7 +715,7 @@ const getAllTransactions = async (req, res) => {
   const { licenseId } = req.user;
 
   try {
-    const userDB = await connectDB(licenseId);
+    const userDB = await connectToUserDB(licenseId);
     const TransactionModel = userDB.model('Transaction', Transaction.schema);
 
     const transactions = await TransactionModel.find(); // Fetch all transactions
@@ -729,7 +736,7 @@ const deleteDataTransaction = async (req, res) => {
 
   try {
     // Ensure the database connection is successful
-    const userDB = await connectDB(licenseId);
+    const userDB = await connectToUserDB(licenseId);
     if (!userDB) {
       return res.status(500).json({ message: 'Failed to connect to user database' });
     }
