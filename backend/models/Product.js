@@ -13,7 +13,7 @@ const productSchema = new mongoose.Schema({
   gst_rate: {
     type: Number,
     required: true,
-    enum: [12, 18]  // Only allow GST rates of 12 or 18
+    //enum: [12, 18]  // Only allow GST rates of 12 or 18
   },
   barcode_number: {
     type: String,
