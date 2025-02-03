@@ -41,7 +41,7 @@ const LandingPage = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
       <header className="container mx-auto px-4 py-8">
         <nav className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-600">BillEase</h1>
+          <h1 className="text-2xl font-bold text-blue-600">BillGram</h1>
           <div className="space-x-3">
             <button className="text-gray-600 hover:text-blue-600 transition-colors">
               About
@@ -189,7 +189,7 @@ const LandingPage = () => {
             Ready to streamline your billing process?
           </h3>
           <p className="text-gray-600 mb-6 text-center md:text-left">
-            Join thousands of businesses already using BillEase
+            Join thousands of businesses already using BillGram
           </p>
           <div className="flex flex-col md:flex-row max-w-md md:max-w-lg mx-auto">
             <input
@@ -215,7 +215,7 @@ const LandingPage = () => {
 
       <footer className="bg-gray-100 py-4 mb-0">
         <div className="container mx-auto px-4 text-center text-gray-600 mb-0">
-          © 2023 BillEase. All rights reserved.
+          © 2023 BillGram. All rights reserved.
         </div>
       </footer>
     </div>
