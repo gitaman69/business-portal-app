@@ -820,32 +820,6 @@ const razePayment = async (req, res) => {
   }
 };
 
-
-const razeVerifyPayment = async (req, res) => {
-  const { paymentId, orderId, signature } = req.body;
-
-  const generatedSignature = crypto
-    .createHmac('sha256', razorpayInstance.key_secret)
-    .update(orderId + "|" + paymentId)
-    .digest('hex');
-
-  if (generatedSignature === signature) {
-    try {
-      const paymentDetails = await razorpayInstance.payments.fetch(paymentId);
-
-      if (paymentDetails.status === 'captured') {
-        res.json({ success: true });
-      } else {
-        res.json({ success: false, message: 'Payment not captured' });
-      }
-    } catch (err) {
-      res.status(500).json({ error: 'Payment verification failed', details: err.message });
-    }
-  } else {
-    res.status(400).json({ error: 'Signature verification failed' });
-  }
-};
-
 module.exports = {
   registerUser,
   loginUser,
@@ -872,5 +846,4 @@ module.exports = {
   getAllTransactions,
   deleteDataTransaction,
   razePayment,
-  razeVerifyPayment
 };

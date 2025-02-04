@@ -9,7 +9,6 @@ const DonatePage = () => {
   const [transactionId, setTransactionId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [paymentStatus, setPaymentStatus] = useState(null);
 
   const handleDonate = async (e) => {
     e.preventDefault();
@@ -32,11 +31,6 @@ const DonatePage = () => {
           // After successful payment, response contains the payment ID and signature
           const paymentId = response.razorpay_payment_id;
           setTransactionId(paymentId);
-          const signature = response.razorpay_signature; // Get the signature
-          const orderId = response.razorpay_order_id;
-      
-          // Send paymentId, orderId, and signature for verification
-          verifyPayment(paymentId, orderId, signature);
         },
         theme: {
           color: "#F37254",
@@ -51,26 +45,6 @@ const DonatePage = () => {
       setError("Payment failed. Please try again.");
     } finally {
       setLoading(false);
-    }
-  };
-  
-
-  const verifyPayment = async (paymentId, orderId, signature) => {
-  
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/payment/verify`, {
-        paymentId,
-        orderId,
-        signature
-      });
-  
-      if (response.data.success) {
-        setPaymentStatus("Payment Successful!");
-      } else {
-        setPaymentStatus("Payment Failed. Try again.");
-      }
-    } catch (err) {
-      setPaymentStatus("Payment Verification Failed.");
     }
   };
   
@@ -127,16 +101,8 @@ const DonatePage = () => {
           <div className="mt-6 text-center text-green-600">
             <p className="font-semibold">Donation Successful!</p>
             <p>Your transaction ID is: {transactionId}</p>
-            <button
-              onClick={verifyPayment}
-              className="mt-4 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
-            >
-              Verify Payment
-            </button>
           </div>
         )}
-
-        {paymentStatus && <p className="mt-4 text-lg text-center">{paymentStatus}</p>}
       </div>
 
       <Link to="/" className="mt-8 text-purple-600 hover:underline text-lg flex items-center">
