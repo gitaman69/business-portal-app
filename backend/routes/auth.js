@@ -1,5 +1,5 @@
 const express = require('express');
-const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, fullName, TNewUsers, newTransaction, TAllUsers, deleteTransaction, deleteTuser, addBillData, getBillData, sendFeedback, addBankAccount, addPaymentMode, addBankTransaction, deleteBankAccount, deletePaymentMode, getAllBankAccounts, getAllPaymentModes, getAllTransactions, deleteDataTransaction } = require('../controllers/authController');
+const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, fullName, TNewUsers, newTransaction, TAllUsers, deleteTransaction, deleteTuser, addBillData, getBillData, sendFeedback, addBankAccount, addPaymentMode, addBankTransaction, deleteBankAccount, deletePaymentMode, getAllBankAccounts, getAllPaymentModes, getAllTransactions, deleteDataTransaction, razePayment, razeVerifyPayment } = require('../controllers/authController');
 const authMiddleware = require('../Middleware/middleware');
 const router = express.Router();
 
@@ -14,6 +14,12 @@ router.post('/send-email',sendEmail);
 
 //send-feedback
 router.post('/send-feedback',sendFeedback);
+
+//send payment
+router.post('/donate',razePayment);
+
+//verify payment
+router.post('/payment/verify',razeVerifyPayment);
 
 //add product
 router.post('/addProduct',authMiddleware, addProduct);

@@ -12,6 +12,7 @@ import AddBillData from './Components/AddBillData/AddBillData';
 import SeeBillData from './Components/GetBillData/GetBillData';
 import FeedBackForm from './Components/FeedBackForm/FeedbackForm';
 import DataEntry from './Components/DataEntry/DataEntry';
+import DonatePage from './Components/DonatePage/DonatePage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -44,6 +45,7 @@ function App() {
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="/feedback" element={<FeedBackForm/>} />
+        <Route path="/donate" element={<DonatePage />} />
         <Route element={<HeaderLayout />}>
           <Route path="/dashboard" element={<ProtectedRoute><BillingPage/></ProtectedRoute>} />
           <Route path="/addProduct" element={<ProtectedRoute><ProductManagement/></ProtectedRoute> } />

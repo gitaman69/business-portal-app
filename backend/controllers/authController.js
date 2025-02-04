@@ -10,6 +10,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
 const BankAccount = require("../models/BankAccount");
 const PaymentMode = require("../models/PaymentMode");
 const Transaction = require("../models/Transaction");
@@ -783,6 +785,67 @@ const deleteDataTransaction = async (req, res) => {
   }
 };
 
+// Razorpay credentials
+const razorpayInstance = new Razorpay({
+  key_id: process.env.KEY_ID,  // Replace with your Razorpay key ID
+  key_secret: process.env.KEY_SECRET,  // Replace with your Razorpay secret key
+});
+
+const razePayment = async (req, res) => {
+  const { amount, currency } = req.body;
+
+  if (!amount || !currency) {
+    return res.status(400).json({ error: 'Amount and Currency are required' });
+  }
+
+  try {
+    const options = {
+      amount: amount * 100, // Razorpay accepts amount in paise (1 INR = 100 paise)
+      currency: currency,
+      receipt: `txn_${Math.floor(Math.random() * 1000000)}`,
+      payment_capture: 1,
+    };
+
+    const order = await razorpayInstance.orders.create(options);
+
+    if (!order) {
+      throw new Error('Failed to create Razorpay order');
+    }
+
+    res.json({
+      transactionId: order.id,
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Error creating payment order', details: err.message });
+  }
+};
+
+
+const razeVerifyPayment = async (req, res) => {
+  const { paymentId, orderId, signature } = req.body;
+
+  const generatedSignature = crypto
+    .createHmac('sha256', razorpayInstance.key_secret)
+    .update(orderId + "|" + paymentId)
+    .digest('hex');
+
+  if (generatedSignature === signature) {
+    try {
+      const paymentDetails = await razorpayInstance.payments.fetch(paymentId);
+
+      if (paymentDetails.status === 'captured') {
+        res.json({ success: true });
+      } else {
+        res.json({ success: false, message: 'Payment not captured' });
+      }
+    } catch (err) {
+      res.status(500).json({ error: 'Payment verification failed', details: err.message });
+    }
+  } else {
+    res.status(400).json({ error: 'Signature verification failed' });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -807,5 +870,7 @@ module.exports = {
   getAllBankAccounts,
   getAllPaymentModes,
   getAllTransactions,
-  deleteDataTransaction
+  deleteDataTransaction,
+  razePayment,
+  razeVerifyPayment
 };
