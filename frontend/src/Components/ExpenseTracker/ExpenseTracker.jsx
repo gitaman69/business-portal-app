@@ -5,6 +5,10 @@ const ExpenseTracker = () => {
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState({ name: "", mobile: "" });
   const [transactions, setTransactions] = useState({});
+  const [upiId, setUpiId] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isUpiModalOpen, setIsUpiModalOpen] = useState(false);
+
 
   // Fetch users and their transactions from the database
   const fetchUsers = async () => {
@@ -135,26 +139,29 @@ const ExpenseTracker = () => {
     return netAmount;
   };
 
-  // Send net balance to WhatsApp
-  const sendWhatsAppMessage = (user) => {
-    const netAmount = calculateNetAmount(user);
-    const upiId = "amanbhakar@ibl"; // Replace with the actual UPI ID
+  // Open UPI Modal
+  const openUpiModal = (user) => {
+    setSelectedUser(user);
+    setUpiId(""); // Reset input
+    setIsUpiModalOpen(true);
+  };
 
-    const message = `Hello ${
-      user.name
-    }, your net balance is Rs. ${netAmount}.\nTransactions:\n${user.transactions
-      .map(
-        (tx, index) => `${index + 1}. ${tx.type.toUpperCase()} Rs. ${tx.amount}`
-      )
-      .join(
-        "\n"
-      )}\n\nYou can make your payment to the following UPI ID: ${upiId}`;
+  // Send WhatsApp Message
+  const sendWhatsAppMessage = () => {
+    if (!upiId || !selectedUser) return;
 
-    const phoneNumber = user.mobile;
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-      message
-    )}`;
+    const netAmount = calculateNetAmount(selectedUser);
+    const message = `Hello ${selectedUser.name}, your net balance is Rs. ${netAmount}.
+    Transactions:\n${selectedUser.transactions
+      .map((tx, index) => `${index + 1}. ${tx.type.toUpperCase()} Rs. ${tx.amount}`)
+      .join("\n")}
+      
+    You can make your payment to the following UPI ID: ${upiId}`;
+
+    const whatsappUrl = `https://wa.me/${selectedUser.mobile}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
+
+    setIsUpiModalOpen(false); // Close modal after sending
   };
 
   return (
@@ -276,7 +283,7 @@ const ExpenseTracker = () => {
 
               {/* Send WhatsApp Message */}
               <button
-                onClick={() => sendWhatsAppMessage(user)}
+                onClick={() => openUpiModal(user)}
                 className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded mt-4 w-full sm:w-auto"
               >
                 Send to WhatsApp
@@ -284,6 +291,35 @@ const ExpenseTracker = () => {
             </div>
           ))}
       </div>
+      {/* UPI ID Modal */}
+      {isUpiModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-lg font-bold mb-4">Enter UPI ID</h2>
+            <input
+              type="text"
+              value={upiId}
+              onChange={(e) => setUpiId(e.target.value)}
+              placeholder="Enter UPI ID"
+              className="p-2 border rounded w-full mb-4"
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setIsUpiModalOpen(false)}
+                className="px-4 py-2 bg-gray-300 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={sendWhatsAppMessage}
+                className="px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

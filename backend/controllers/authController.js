@@ -45,7 +45,7 @@ const sendEmail = async (req, res) => {
   Start your journey toward financial ease today!
   Visit us at https://business-portal-app.onrender.com
   
-  Download the Bill-Ease app: https://drive.google.com/file/d/1aVKqi-zhZrX3uaM1kRQA1K_9TX-1L0iD/view?usp=drive_link
+  Download the Bill-Ease app: https://drive.google.com/file/d/1qrRs5mTX2hwPHH1sTvkkY4WXxE7clX28/view?usp=drive_link
   Log in to your account: https://business-portal-app.onrender.com/login
   
   Best Regards,
