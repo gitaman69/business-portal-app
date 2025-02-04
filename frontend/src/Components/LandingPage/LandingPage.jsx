@@ -96,13 +96,6 @@ const LandingPage = () => {
           </button>
         </section>
 
-        {/* Product Hunt Badge */}
-        <section className="text-center my-6">
-          <a href="https://www.producthunt.com/posts/billgram?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-billgram" target="_blank">
-            <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=844725&theme=light&t=1738650863622" alt="BillGram - Effortless invoicing & payment tracking for growing business | Product Hunt" style={{ width: '250px', height: '54px' }} />
-          </a>
-        </section>
-
         <section className="grid md:grid-cols-3 gap-8 mb-16">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-4 flex items-center">
