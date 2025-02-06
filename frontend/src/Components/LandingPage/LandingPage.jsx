@@ -6,7 +6,7 @@ import { FaHeart } from "react-icons/fa";
 const testimonials = [
   {
     id: 1,
-    text: "BillEase has revolutionized our billing process!",
+    text: "BillGram has revolutionized our billing process!",
     author: "Jane D., Small Business Owner",
   },
   {

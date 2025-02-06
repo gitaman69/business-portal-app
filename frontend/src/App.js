@@ -13,6 +13,9 @@ import SeeBillData from './Components/GetBillData/GetBillData';
 import FeedBackForm from './Components/FeedBackForm/FeedbackForm';
 import DataEntry from './Components/DataEntry/DataEntry';
 import DonatePage from './Components/DonatePage/DonatePage';
+import About from './Components/About/About';
+import PrivacyPolicy from './Components/About/PrivacyPolicy';
+import ContactUs from './Components/About/ContactUs';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -44,6 +47,9 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route path="/" element={<LandingPage />} />
+        <Route path="/about" element={<About/>} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy/>} />
+        <Route path="/contact-us" element={<ContactUs/>} />
         <Route path="/feedback" element={<FeedBackForm/>} />
         <Route path="/donate" element={<DonatePage />} />
         <Route element={<HeaderLayout />}>

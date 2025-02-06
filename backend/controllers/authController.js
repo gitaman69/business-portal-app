@@ -34,12 +34,12 @@ const sendEmail = async (req, res) => {
   const mailOptions = {
     from: process.env.USER,
     to: email,
-    subject: "Welcome to Bill-Ease",
+    subject: "Welcome to BillGram",
     text: `Hello ${name || "User"},
   
-  Thank you for joining Bill-Ease! Managing your expenses and tracking your finances has never been easier.
+  Thank you for joining BillGram! Managing your expenses and tracking your finances has never been easier.
   
-  With Bill-Ease, you can:
+  With BillGram, you can:
   - Organize your expenses effortlessly.
   - Monitor all your transactions in one place.
   - Gain financial insights to make smarter decisions.
@@ -47,23 +47,23 @@ const sendEmail = async (req, res) => {
   Start your journey toward financial ease today!
   Visit us at https://business-portal-app.onrender.com
   
-  Download the Bill-Ease app: https://drive.google.com/file/d/1qrRs5mTX2hwPHH1sTvkkY4WXxE7clX28/view?usp=drive_link
+  Download the BillGram app: https://drive.google.com/file/d/1qrRs5mTX2hwPHH1sTvkkY4WXxE7clX28/view?usp=drive_link
   Log in to your account: https://business-portal-app.onrender.com/login
   
   Best Regards,
-  The Bill-Ease Team`,
+  The BillGram Team`,
   
     html: `
       <html>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
           <div style="max-width: 600px; margin: auto; background: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
             <header style="background-color: #1E90FF; color: white; padding: 20px; text-align: center;">
-              <h1>Welcome to Bill-Ease</h1>
+              <h1>Welcome to BillGram</h1>
             </header>
             <div style="padding: 20px;">
               <h2>Hello ${name || "User"},</h2>
-              <p>Thank you for joining Bill-Ease! Managing your expenses and tracking your finances has never been easier.</p>
-              <p>With Bill-Ease, you can:</p>
+              <p>Thank you for joining BillGram! Managing your expenses and tracking your finances has never been easier.</p>
+              <p>With BillGram, you can:</p>
               <ul style="padding-left: 20px;">
                 <li>Organize your expenses effortlessly.</li>
                 <li>Monitor all your transactions in one place.</li>
@@ -74,7 +74,7 @@ const sendEmail = async (req, res) => {
               <a href="https://business-portal-app.onrender.com/login" style="display: inline-block; margin-top: 20px; margin-left: 10px; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">Log In</a>
             </div>
             <footer style="background-color: #f1f1f1; text-align: center; padding: 10px; font-size: 14px; color: #666;">
-              <p>&copy; 2024 Bill-Ease. All rights reserved.</p>
+              <p>&copy; 2025 BillGram. All rights reserved.</p>
             </footer>
           </div>
         </body>
