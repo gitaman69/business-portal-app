@@ -44,9 +44,11 @@ const LandingPage = () => {
         <nav className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-blue-600">BillGram</h1>
           <div className="space-x-3">
-            <button className="text-gray-600 hover:text-blue-600 transition-colors">
-              About
-            </button>
+            <Link to="/about">
+              <button className="text-gray-600 hover:text-blue-600 transition-colors">
+                About
+              </button>
+            </Link>
             <Link to="/login">
               <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-900 transition-colors">
                 Login
