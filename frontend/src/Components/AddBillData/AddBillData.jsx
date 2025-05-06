@@ -40,6 +40,13 @@ const AddBillData = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.qr || formData.qr.trim() === "") {
+      showToast("Please upload a QR image before submitting.", "error");
+      return;
+    }else{
+      console.log("QR Data:", formData.qr);
+    }
+
     try {
       const token = localStorage.getItem("authToken");
       await axios.post(
@@ -59,7 +66,6 @@ const AddBillData = () => {
         storeMail: "",
         storeContact: "",
         storeAddress: "",
-        qr:"",
       });
     } catch (error) {
       console.error("Error adding bill data:", error);
