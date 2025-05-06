@@ -66,6 +66,7 @@ const AddBillData = () => {
         storeMail: "",
         storeContact: "",
         storeAddress: "",
+        qr: "",
       });
     } catch (error) {
       console.error("Error adding bill data:", error);
@@ -133,6 +134,7 @@ const AddBillData = () => {
           </label>
           <input
             type="file"
+            name="qr"
             accept="image/*"
             onChange={handleFileChange}
             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
