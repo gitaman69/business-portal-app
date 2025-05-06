@@ -43,8 +43,6 @@ const AddBillData = () => {
     if (!formData.qr || formData.qr.trim() === "") {
       showToast("Please upload a QR image before submitting.", "error");
       return;
-    }else{
-      console.log("QR Data:", formData.qr);
     }
 
     try {

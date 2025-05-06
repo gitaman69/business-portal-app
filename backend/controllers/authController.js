@@ -360,7 +360,7 @@ const fullName = async (req, res) => {
 // Route to add/store bill data under user-specific database
 const addBillData = async (req, res) => {
   const { licenseId } = req.user; // Assuming the licenseId is available after authentication
-  const { storeName, storeMail, storeContact, storeAddress } = req.body; // Bill data from request
+  const { storeName, storeMail, storeContact, storeAddress, qr } = req.body; // Bill data from request
 
   try {
     // Get the user-specific DB connection from cache
@@ -379,6 +379,7 @@ const addBillData = async (req, res) => {
       existingBillData.storeMail = storeMail;
       existingBillData.storeContact = storeContact;
       existingBillData.storeAddress = storeAddress;
+      existingBillData.qr = qr;
 
       // Save the updated data
       await existingBillData.save();
@@ -394,6 +395,7 @@ const addBillData = async (req, res) => {
         storeMail,
         storeContact,
         storeAddress,
+        qr,
       });
 
       // Save the new bill data to the database
