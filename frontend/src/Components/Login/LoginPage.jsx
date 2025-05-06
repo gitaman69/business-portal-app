@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -53,6 +53,26 @@ export default function LoginPage({onLogin}) {
       }
     }
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const licenseId = params.get("licenseId");
+
+    if (token && licenseId) {
+      localStorage.setItem("authToken", token);
+
+      axios
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/getName/${licenseId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => {
+          onLogin({ licenseId, fullName: res.data.fullName });
+          navigate("/dashboard");
+        })
+        .catch(() => setError("Google login failed. Try again."));
+    }
+  }, [navigate, onLogin]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-white">
@@ -126,6 +146,21 @@ export default function LoginPage({onLogin}) {
             Sign up here
           </Link>
         </p>
+        <div className="mt-6">
+          <button
+            onClick={() =>
+              (window.location.href = `${process.env.REACT_APP_BACKEND_URL}/api/auth/google`)
+            }
+            className="w-full flex items-center justify-center gap-2 bg-white text-[#042f49] font-medium border border-[#042f49] py-2 px-4 rounded hover:bg-[#f1f1f1]"
+          >
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              alt="Google logo"
+              className="w-5 h-5"
+            />
+            Sign in with Google
+          </button>
+        </div>
       </div>
     </div>
   );

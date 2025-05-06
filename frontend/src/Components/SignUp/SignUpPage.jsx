@@ -58,6 +58,10 @@ export default function SignUpPage() {
     }
   };
 
+  const handleGoogleSignup = () => {
+    window.location.href = `${process.env.REACT_APP_BACKEND_URL}/api/auth/google`;
+  };
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(licenseId);
@@ -150,6 +154,19 @@ export default function SignUpPage() {
             Log in here
           </Link>
         </p>
+        <div className="mt-6">
+          <button
+            onClick={handleGoogleSignup}
+            className="w-full flex items-center justify-center gap-2 bg-white text-[#042f49] font-medium border border-[#042f49] py-2 px-4 rounded hover:bg-[#f1f1f1]"
+          >
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              alt="Google logo"
+              className="w-5 h-5"
+            />
+            Sign up with Google
+          </button>
+        </div>
       </div>
     </div>
   );

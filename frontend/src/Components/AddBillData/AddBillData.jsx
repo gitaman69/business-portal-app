@@ -18,6 +18,17 @@ const AddBillData = () => {
     });
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, qr: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const showToast = (message, type) => {
     setToast({ message, type, visible: true });
     setTimeout(() => {
@@ -106,6 +117,31 @@ const AddBillData = () => {
             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
           />
         </div>
+
+        {/* QR Image Upload */}
+        <div>
+          <label htmlFor="qr" className="block text-sm font-medium">
+            Upload QR Image
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+          />
+        </div>
+
+        {/* Preview QR (optional) */}
+        {formData.qr && (
+          <div className="mt-4">
+            <p className="text-sm text-gray-600 mb-1">QR Preview:</p>
+            <img
+              src={formData.qr}
+              alt="QR Preview"
+              className="w-32 h-32 border rounded-md"
+            />
+          </div>
+        )}
         <button
           type="submit"
           className="bg-blue-500 text-white py-2 px-4 rounded"

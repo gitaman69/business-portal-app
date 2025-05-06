@@ -2,9 +2,11 @@ const express = require("express");
 const path = require("path");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
+const passport = require("passport");
 const {connectDB} = require("./config/db");
 const authRoutes = require("./routes/auth");
 const cors = require("cors");
+require("./controllers/passport");
 
 dotenv.config();
 
@@ -17,6 +19,7 @@ const corsOptions = {
 const _dirname = path.resolve();
 
 // Middleware
+app.use(passport.initialize());
 app.use(cors(corsOptions)); // Enable cross-origin resource sharing
 app.use(bodyParser.json());
 

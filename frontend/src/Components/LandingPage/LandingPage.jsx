@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { VscFeedback } from "react-icons/vsc";
 import { FaHeart } from "react-icons/fa";
+import About from "../About/About.jsx";
+import ContactUS from "../About/ContactUs.jsx";
+import PrivacyPolicy from "../About/PrivacyPolicy.jsx";
+import Donate from "../DonatePage/DonatePage.jsx";
+import Feedback from "../FeedBackForm/FeedbackForm.jsx";
 
 const testimonials = [
   {
@@ -220,6 +225,12 @@ const LandingPage = () => {
           </Link>
         </section>
       </main>
+
+      <About />
+      <PrivacyPolicy />
+      <ContactUS />
+      <Donate />
+      <Feedback />
 
       <footer className="bg-gray-100 py-4 mb-0">
         <div className="container mx-auto px-4 text-center text-gray-600 mb-0">

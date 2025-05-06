@@ -218,6 +218,25 @@ const loginUser = async (req, res) => {
   }
 };
 
+const googleCallback = async (req, res) => {
+  try {
+    const user = req.user;
+
+    const token = jwt.sign(
+      { id: user._id, licenseId: user.licenseId },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    // Connect to user's DB
+    await connectDB(user.licenseId);
+
+    res.redirect(`${process.env.REACT_APP_BACKEND_URL}/login?token=${token}&licenseId=${user.licenseId}`);
+  } catch (err) {
+    res.status(500).json({ message: "Google auth failed", error: err.message });
+  }
+};
+
 // Route to add a new product
 const addProduct = async (req, res) => {
   const { product_name, mrp, gst_rate, barcode_number } = req.body;
@@ -821,6 +840,8 @@ const razePayment = async (req, res) => {
 };
 
 module.exports = {
+  generateLicenseId,
+  googleCallback,
   registerUser,
   loginUser,
   sendEmail,

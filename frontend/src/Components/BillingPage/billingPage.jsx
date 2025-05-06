@@ -86,93 +86,132 @@ export default function BillingPage() {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
-
-    // Add store name and details
-    doc.setFontSize(22);
-    doc.setTextColor(44, 62, 80); // Dark blue color
-    doc.text(`${billData.storeName}`, pageWidth / 2, 20, { align: "center" });
+  
+    const primaryColor = [88, 101, 242];
+    const secondaryColor = [245, 245, 255];
+    const textColor = [33, 33, 33];
+  
+    // === Top Header ===
+    doc.setFillColor(...primaryColor);
+    doc.rect(0, 0, pageWidth, 20, 'F');
+    doc.setFontSize(14);
+    doc.setTextColor(255, 255, 255);
+    doc.text(billData.storeName, pageWidth / 2, 12, { align: 'center' });
+  
+    // === Store Info ===
     doc.setFontSize(10);
-    doc.setTextColor(52, 73, 94); // Slightly lighter blue
-    doc.text(`${billData.storeAddress}`, pageWidth / 2, 30, {
-      align: "center",
-    });
-    doc.text(
-      `Contact: ${billData.storeContact} | Email: ${billData.storeMail}`,
-      pageWidth / 2,
-      35,
-      { align: "center" }
-    );
-
-    // Add invoice title
-    doc.setFontSize(18);
-    doc.setTextColor(41, 128, 185); // Light blue color
-    doc.text("Invoice", pageWidth / 2, 50, { align: "center" });
-
-    // Add invoice details
-    doc.setFontSize(10);
-    doc.setTextColor(52, 73, 94);
-    const invoiceDate = new Date().toLocaleDateString();
+    doc.setTextColor(...textColor);
+    doc.text(`${billData.storeAddress}`, pageWidth / 2, 26, { align: "center" });
+    doc.text(`Phone: ${billData.storeContact} | Email: ${billData.storeMail}`, pageWidth / 2, 32, { align: "center" });
+  
+    // === Invoice Info ===
+    const invoiceDate = new Date();
     const invoiceNumber = `INV-${Math.floor(Math.random() * 10000)}`;
-    doc.text(`Date: ${invoiceDate}`, 10, 60);
-    doc.text(`Invoice Number: ${invoiceNumber}`, pageWidth - 10, 60, {
-      align: "right",
-    });
-
-    // Prepare table data
+    doc.text(`No: ${invoiceNumber}`, pageWidth - 10, 26, { align: 'right' });
+    doc.text(`Date: ${invoiceDate.toLocaleDateString()}`, pageWidth - 10, 32, { align: 'right' });
+    doc.text(`Time: ${invoiceDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`, pageWidth - 10, 38, { align: 'right' });
+  
+    // === Table Data ===
     const tableData = billItems.map((item) => {
       const gstAmount = calculateGST(item.mrp, item.gst_rate);
-      const priceExcludingGST = item.mrp - gstAmount;
+      const priceExclGST = item.mrp - gstAmount;
       return [
         item.product_name,
-        `₹${priceExcludingGST.toFixed(2)}`,
-        `₹${gstAmount.toFixed(2)}`,
+        `${priceExclGST.toFixed(2)}`,
+        `${gstAmount.toFixed(2)}`,
         item.quantity,
-        `₹${(item.mrp * item.quantity).toFixed(2)}`,
+        `${(item.mrp * item.quantity).toFixed(2)}`
       ];
     });
-
-    // Add table to the PDF
+  
     doc.autoTable({
-      head: [["Product", "Price", "GST", "Quantity", "Total"]],
+      head: [["Product", "Price", "GST", "Qty", "Total"]],
       body: tableData,
-      startY: 70,
-      headStyles: { fillColor: [41, 128, 185], textColor: 255 },
-      alternateRowStyles: { fillColor: [242, 242, 242] },
+      startY: 46,
+      headStyles: {
+        fillColor: primaryColor,
+        textColor: 255,
+        fontStyle: "bold",
+        halign: "center",
+      },
+      bodyStyles: {
+        textColor: textColor,
+        lineColor: [222, 222, 222],
+        lineWidth: 0.1,
+      },
+      alternateRowStyles: { fillColor: secondaryColor },
       columnStyles: {
         0: { cellWidth: "auto" },
-        1: { cellWidth: 30, halign: "right" },
-        2: { cellWidth: 30, halign: "right" },
-        3: { cellWidth: 30, halign: "right" },
-        4: { cellWidth: 30, halign: "right" },
+        1: { halign: "right" },
+        2: { halign: "right" },
+        3: { halign: "center" },
+        4: { halign: "right" },
+      },
+      styles: {
+        fontSize: 10,
+        cellPadding: 5,
       },
     });
-
-    // Add the total
+  
     const total = calculateTotal();
-    const finalY = doc.lastAutoTable.finalY || 70;
-    doc.setFontSize(12);
-    doc.setTextColor(44, 62, 80);
-    doc.text(`Subtotal:`, pageWidth - 60, finalY + 10);
-    doc.text(`₹${total.toFixed(2)}`, pageWidth - 10, finalY + 10, {
-      align: "right",
-    });
-    doc.setFontSize(14);
-    doc.setFont(undefined, "bold");
-    doc.text(`Total:`, pageWidth - 60, finalY + 30);
-    doc.text(`₹${total.toFixed(2)}`, pageWidth - 10, finalY + 30, {
-      align: "right",
-    });
-
-    // Add footer
+    const finalY = doc.lastAutoTable.finalY || 100;
+    const gstTotal = billItems.reduce((sum, item) => {
+      return sum + calculateGST(item.mrp, item.gst_rate) * item.quantity;
+    }, 0);
+  
+    // === Totals on right ===
+    const totalsY = finalY + 10;
     doc.setFontSize(10);
+    doc.setTextColor(...textColor);
+    doc.text("Gross Amount", pageWidth - 60, totalsY);
+    doc.text(`${total.toFixed(2)}`, pageWidth - 10, totalsY, { align: "right" });
+  
+    doc.text("Discount", pageWidth - 60, totalsY + 6);
+    doc.text(`0.00`, pageWidth - 10, totalsY + 6, { align: "right" });
+  
+    doc.text("Inclusive Gst", pageWidth - 60, totalsY + 12);
+    doc.text(`${gstTotal.toFixed(2)}`, pageWidth - 10, totalsY + 12, { align: "right" });
+  
+    doc.setFontSize(12);
+    doc.setFont(undefined, "bold");
+    doc.setTextColor(...primaryColor);
+    doc.text("Net Amount", pageWidth - 60, totalsY + 22);
+    doc.text(`${total.toFixed(2)}`, pageWidth - 10, totalsY + 22, { align: "right" });
+  
+    // === QR Bottom Right Box ===
+    if (billData.qr) {
+      try {
+        const qrBoxWidth = 60;
+        const qrBoxHeight = 70;
+        const qrX = pageWidth - qrBoxWidth - 10;
+        const qrY = totalsY + 35;
+  
+        // Box with white background
+        doc.setFillColor(255, 255, 255);
+        doc.setDrawColor(200);
+        doc.setLineWidth(0.3);
+        doc.rect(qrX, qrY, qrBoxWidth, qrBoxHeight, 'FD');
+  
+        doc.setFontSize(11);
+        doc.setTextColor(...textColor);
+        doc.text("Scan to Pay", qrX + qrBoxWidth / 2, qrY + 8, { align: "center" });
+  
+        doc.addImage(billData.qr, "PNG", qrX + 5, qrY + 13, 50, 50);
+      } catch (err) {
+        console.error("QR error", err);
+      }
+    }
+  
+    // === Footer Thank You ===
+    doc.setFontSize(11);
     doc.setFont(undefined, "normal");
-    doc.setTextColor(149, 165, 166);
-    doc.text("Thank you for your business!", pageWidth / 2, pageHeight - 20, {
+    doc.setTextColor(...primaryColor);
+    doc.text("Thank you for shopping with us!", pageWidth / 2, pageHeight - 10, {
       align: "center",
     });
-
-    // Save the PDF
+  
     doc.save("invoice.pdf");
+    setBillItems([]);
   };
 
   return (

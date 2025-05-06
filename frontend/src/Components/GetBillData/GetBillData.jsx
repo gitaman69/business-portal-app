@@ -36,6 +36,7 @@ const SeeBillData = () => {
               <th className="px-4 py-2 text-left">Store Email</th>
               <th className="px-4 py-2 text-left">Store Contact</th>
               <th className="px-4 py-2 text-left">Store Address</th>
+              <th className="px-4 py-2 text-left">QR Code</th>
             </tr>
           </thead>
           <tbody>
@@ -45,6 +46,17 @@ const SeeBillData = () => {
                 <td className="px-4 py-2">{bill.storeMail}</td>
                 <td className="px-4 py-2">{bill.storeContact}</td>
                 <td className="px-4 py-2">{bill.storeAddress}</td>
+                <td className="px-4 py-2">
+                  {bill.qr ? (
+                    <img
+                      src={bill.qr}
+                      alt="QR Code"
+                      className="w-16 h-16 object-contain border rounded"
+                    />
+                  ) : (
+                    <span className="text-gray-500 italic">No QR</span>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

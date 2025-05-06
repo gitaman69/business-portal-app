@@ -18,6 +18,11 @@ const billDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  qr: {
+    type: String,
+    required: true,
+    default: '',
+  },
 });
 
 const BillData = mongoose.model('BillData', billDataSchema);

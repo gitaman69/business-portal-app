@@ -1,7 +1,18 @@
 const express = require('express');
-const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, fullName, TNewUsers, newTransaction, TAllUsers, deleteTransaction, deleteTuser, addBillData, getBillData, sendFeedback, addBankAccount, addPaymentMode, addBankTransaction, deleteBankAccount, deletePaymentMode, getAllBankAccounts, getAllPaymentModes, getAllTransactions, deleteDataTransaction, razePayment} = require('../controllers/authController');
+const passport = require("passport");
+const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, fullName, TNewUsers, newTransaction, TAllUsers, deleteTransaction, deleteTuser, addBillData, getBillData, sendFeedback, addBankAccount, addPaymentMode, addBankTransaction, deleteBankAccount, deletePaymentMode, getAllBankAccounts, getAllPaymentModes, getAllTransactions, deleteDataTransaction, razePayment, googleCallback} = require('../controllers/authController');
 const authMiddleware = require('../Middleware/middleware');
 const router = express.Router();
+
+// Start Google OAuth
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+// Google OAuth Callback
+router.get(
+    "/google/callback",
+    passport.authenticate("google", { failureRedirect: "/login", session: false }),
+    (req, res, next) => googleCallback(req, res)
+);
 
 // Login route
 router.post('/login', loginUser);
