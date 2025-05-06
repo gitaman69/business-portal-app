@@ -7,6 +7,7 @@ const AddBillData = () => {
     storeMail: "",
     storeContact: "",
     storeAddress: "",
+    qr: "",
   });
 
   const [toast, setToast] = useState({ message: "", type: "", visible: false });
@@ -58,6 +59,7 @@ const AddBillData = () => {
         storeMail: "",
         storeContact: "",
         storeAddress: "",
+        qr:"",
       });
     } catch (error) {
       console.error("Error adding bill data:", error);
