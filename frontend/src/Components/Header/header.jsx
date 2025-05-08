@@ -66,9 +66,8 @@ const Header = ({ user, onLogout }) => {
           {!isBillingPage && (
             <Link
               to="/dashboard"
-              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition duration-300"
             >
-              Go to Billing Page
+               <button className="btn btn-soft">Go to Billing Page</button>
             </Link>
           )}
         </div>
