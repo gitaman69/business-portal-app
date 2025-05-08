@@ -42,29 +42,25 @@ const Header = ({ user, onLogout }) => {
         </button>
         {/*Desktop Menu */}
         <div className="hidden lg:flex items-center space-x-4">
-          <Link
+        <Link
             to="/inventory"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300"
           >
-            Inventory
+            <button className="btn btn-neutral">Inventory</button>
           </Link>
           <Link
             to="/addProduct"
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300"
           >
-            Add Product
+            <button className="btn btn-neutral">Add Product</button>
           </Link>
           <Link
             to="/expenseTracker"
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300"
           >
-            Expense Tracker
+            <button className="btn btn-neutral">Expense Tracker</button>
           </Link>
           <Link
             to="/dataEntry"
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300"
           >
-            Data Entry
+             <button className="btn btn-neutral">Data Entry</button>
           </Link>
           {/* Conditionally show Billing Page button if not on Billing Page */}
           {!isBillingPage && (

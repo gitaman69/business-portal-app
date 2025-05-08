@@ -24,7 +24,7 @@ const DataEntryPage = () => {
   const [paymentModes, setPaymentModes] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [newTransaction, setNewTransaction] = useState({
-    date: "",
+    date: new Date().toISOString().split("T")[0],
     amount: "",
     type: "Credit",
     mode: "",
@@ -89,7 +89,7 @@ const DataEntryPage = () => {
   
       // Reset the form fields
       setNewTransaction({
-        date: "",
+        date: new Date().toISOString().split("T")[0],
         amount: "",
         type: "Credit",
         mode: "",
@@ -228,8 +228,8 @@ const DataEntryPage = () => {
 
   const downloadEStatement = () => {
     const csvContent = [
-      ["Date", "Amount", "Type", "Payment Mode", "Bank Account"],
-      ...transactions.map((t) => [t.date, t.amount, t.type, t.mode, t.account]),
+      ["Date", "Amount", "Type", "Payment Mode", "Net Balance", "Bank Account"],
+      ...transactions.map((t) => [t.date, t.amount, t.type, t.mode, t.netBalance, t.account]),
     ]
       .map((e) => e.join(","))
       .join("\n");

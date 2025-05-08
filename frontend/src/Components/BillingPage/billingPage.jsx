@@ -294,7 +294,7 @@ export default function BillingPage() {
           </div>
           <button
             onClick={printBill}
-            className="px-6 py-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            className="btn btn-neutral"
           >
             Print Bill
           </button>
