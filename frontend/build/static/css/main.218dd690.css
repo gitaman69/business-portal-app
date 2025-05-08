@@ -1,0 +1,2 @@
+@tailwind base;@tailwind components;@tailwind utilities;@layer utilities{@keyframes marquee{0%{transform:translateX(100%)}to{transform:translateX(-100%)}}.animate-marquee{animation:marquee 15s linear infinite}}
+/*# sourceMappingURL=main.218dd690.css.map*/
