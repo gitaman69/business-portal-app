@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import NewProductForm from "./newProduct";
+import NewProductForm from "./newProduct.jsx";
 
 export default function BillingPage() {
   const [barcode, setBarcode] = useState("");

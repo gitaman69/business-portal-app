@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Toast from '../FeedBackForm/Toast';
+import Toast from '../FeedBackForm/Toast.jsx';
 
 const FeedbackForm = () => {
   const [rating, setRating] = useState(0);

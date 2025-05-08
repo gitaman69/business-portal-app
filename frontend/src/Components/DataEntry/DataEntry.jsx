@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { LuRefreshCw } from "react-icons/lu";
-import Toast from "./Toast";
+import Toast from "./Toast.jsx";
 import axios from "axios";
 
 // Add an Axios interceptor to include the Authorization header

@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, Outlet } from 'react-router-dom';
-import Header from './Components/Header/header';
-import SignUpPage from './Components/SignUp/SignUpPage';
-import LoginPage from './Components/Login/LoginPage';
-import LandingPage from './Components/LandingPage/LandingPage';
-import BillingPage from './Components/BillingPage/billingPage';
-import ProductManagement from './Components/AddProduct/addProduct';
-import InventoryView from './Components/Inventory/inventory-view';
-import ExpenseTracker from './Components/ExpenseTracker/ExpenseTracker';
-import AddBillData from './Components/AddBillData/AddBillData';
-import SeeBillData from './Components/GetBillData/GetBillData';
-import FeedBackForm from './Components/FeedBackForm/FeedbackForm';
-import DataEntry from './Components/DataEntry/DataEntry';
-import DonatePage from './Components/DonatePage/DonatePage';
-import About from './Components/About/About';
-import PrivacyPolicy from './Components/About/PrivacyPolicy';
-import ContactUs from './Components/About/ContactUs';
+import Header from './Components/Header/header.jsx';
+import SignUpPage from './Components/SignUp/SignUpPage.jsx';
+import LoginPage from './Components/Login/LoginPage.jsx';
+import LandingPage from './Components/LandingPage/LandingPage.jsx';
+import BillingPage from './Components/BillingPage/billingPage.jsx';
+import ProductManagement from './Components/AddProduct/addProduct.jsx';
+import InventoryView from './Components/Inventory/inventory-view.jsx';
+import ExpenseTracker from './Components/ExpenseTracker/ExpenseTracker.jsx';
+import AddBillData from './Components/AddBillData/AddBillData.jsx';
+import SeeBillData from './Components/GetBillData/GetBillData.jsx';
+import FeedBackForm from './Components/FeedBackForm/FeedbackForm.jsx';
+import DataEntry from './Components/DataEntry/DataEntry.jsx';
+import DonatePage from './Components/DonatePage/DonatePage.jsx';
+import About from './Components/About/About.jsx';
+import PrivacyPolicy from './Components/About/PrivacyPolicy.jsx';
+import ContactUs from './Components/About/ContactUs.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
