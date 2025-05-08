@@ -1,4 +1,3 @@
-import daisyui from 'daisyui';
 
 module.exports = {
   content: [
@@ -7,5 +6,5 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [daisyui],
+  plugins: [require("daisyui")],
 }
