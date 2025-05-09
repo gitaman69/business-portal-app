@@ -319,23 +319,6 @@ const DataEntryPage = () => {
       </form>
 
       {/* Add Payment Mode */}
-      <div className="mb-4">
-        <input
-          type="text"
-          value={newPaymentMode}
-          onChange={(e) => setNewPaymentMode(e.target.value)}
-          placeholder="New Payment Mode"
-          className="border p-2 rounded mr-2"
-        />
-        <button
-          onClick={addPaymentMode}
-          className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
-        >
-          Add Payment Mode
-        </button>
-      </div>
-
-      {/* Add Payment Mode */}
       <div className="mb-6">
         <div className="flex items-center gap-x-2">
           <input
