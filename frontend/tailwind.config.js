@@ -7,6 +7,9 @@ const config = {
     extend: {},
   },
   plugins: [daisyui],
+  daisyui: {
+    themes: ['light'],
+  },
 };
 
 export default config;

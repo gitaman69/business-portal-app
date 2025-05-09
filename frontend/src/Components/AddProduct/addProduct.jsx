@@ -175,7 +175,7 @@ export default function ProductManagement() {
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-              <button type="submit" className="w-full btn btn-info">
+              <button type="submit" className="w-full btn btn-primary">
                 Add Product
               </button>
             </form>
@@ -197,7 +197,7 @@ export default function ProductManagement() {
               </div>
               <button
                 onClick={processExcelFile}
-                className="w-full btn btn-soft btn-info"
+                className="w-full btn btn-primary"
               >
                 Process Excel File
               </button>

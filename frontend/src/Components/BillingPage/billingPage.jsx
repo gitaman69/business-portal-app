@@ -86,31 +86,48 @@ export default function BillingPage() {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
-  
+
     const primaryColor = [88, 101, 242];
     const secondaryColor = [245, 245, 255];
     const textColor = [33, 33, 33];
-  
+
     // === Top Header ===
     doc.setFillColor(...primaryColor);
-    doc.rect(0, 0, pageWidth, 20, 'F');
+    doc.rect(0, 0, pageWidth, 20, "F");
     doc.setFontSize(14);
     doc.setTextColor(255, 255, 255);
-    doc.text(billData.storeName, pageWidth / 2, 12, { align: 'center' });
-  
+    doc.text(billData.storeName, pageWidth / 2, 12, { align: "center" });
+
     // === Store Info ===
     doc.setFontSize(10);
     doc.setTextColor(...textColor);
-    doc.text(`${billData.storeAddress}`, pageWidth / 2, 26, { align: "center" });
-    doc.text(`Phone: ${billData.storeContact} | Email: ${billData.storeMail}`, pageWidth / 2, 32, { align: "center" });
-  
+    doc.text(`${billData.storeAddress}`, pageWidth / 2, 26, {
+      align: "center",
+    });
+    doc.text(
+      `Phone: ${billData.storeContact} | Email: ${billData.storeMail}`,
+      pageWidth / 2,
+      32,
+      { align: "center" }
+    );
+
     // === Invoice Info ===
     const invoiceDate = new Date();
     const invoiceNumber = `INV-${Math.floor(Math.random() * 10000)}`;
-    doc.text(`No: ${invoiceNumber}`, pageWidth - 10, 26, { align: 'right' });
-    doc.text(`Date: ${invoiceDate.toLocaleDateString()}`, pageWidth - 10, 32, { align: 'right' });
-    doc.text(`Time: ${invoiceDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`, pageWidth - 10, 38, { align: 'right' });
-  
+    doc.text(`No: ${invoiceNumber}`, pageWidth - 10, 26, { align: "right" });
+    doc.text(`Date: ${invoiceDate.toLocaleDateString()}`, pageWidth - 10, 32, {
+      align: "right",
+    });
+    doc.text(
+      `Time: ${invoiceDate.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`,
+      pageWidth - 10,
+      38,
+      { align: "right" }
+    );
+
     // === Table Data ===
     const tableData = billItems.map((item) => {
       const gstAmount = calculateGST(item.mrp, item.gst_rate);
@@ -120,10 +137,10 @@ export default function BillingPage() {
         `${priceExclGST.toFixed(2)}`,
         `${gstAmount.toFixed(2)}`,
         item.quantity,
-        `${(item.mrp * item.quantity).toFixed(2)}`
+        `${(item.mrp * item.quantity).toFixed(2)}`,
       ];
     });
-  
+
     doc.autoTable({
       head: [["Product", "Price", "GST", "Qty", "Total"]],
       body: tableData,
@@ -152,32 +169,38 @@ export default function BillingPage() {
         cellPadding: 5,
       },
     });
-  
+
     const total = calculateTotal();
     const finalY = doc.lastAutoTable.finalY || 100;
     const gstTotal = billItems.reduce((sum, item) => {
       return sum + calculateGST(item.mrp, item.gst_rate) * item.quantity;
     }, 0);
-  
+
     // === Totals on right ===
     const totalsY = finalY + 10;
     doc.setFontSize(10);
     doc.setTextColor(...textColor);
     doc.text("Gross Amount", pageWidth - 60, totalsY);
-    doc.text(`${total.toFixed(2)}`, pageWidth - 10, totalsY, { align: "right" });
-  
+    doc.text(`${total.toFixed(2)}`, pageWidth - 10, totalsY, {
+      align: "right",
+    });
+
     doc.text("Discount", pageWidth - 60, totalsY + 6);
     doc.text(`0.00`, pageWidth - 10, totalsY + 6, { align: "right" });
-  
+
     doc.text("Inclusive Gst", pageWidth - 60, totalsY + 12);
-    doc.text(`${gstTotal.toFixed(2)}`, pageWidth - 10, totalsY + 12, { align: "right" });
-  
+    doc.text(`${gstTotal.toFixed(2)}`, pageWidth - 10, totalsY + 12, {
+      align: "right",
+    });
+
     doc.setFontSize(12);
     doc.setFont(undefined, "bold");
     doc.setTextColor(...primaryColor);
     doc.text("Net Amount", pageWidth - 60, totalsY + 22);
-    doc.text(`${total.toFixed(2)}`, pageWidth - 10, totalsY + 22, { align: "right" });
-  
+    doc.text(`${total.toFixed(2)}`, pageWidth - 10, totalsY + 22, {
+      align: "right",
+    });
+
     // === QR Bottom Right Box ===
     if (billData.qr) {
       try {
@@ -185,31 +208,38 @@ export default function BillingPage() {
         const qrBoxHeight = 70;
         const qrX = pageWidth - qrBoxWidth - 10;
         const qrY = totalsY + 35;
-  
+
         // Box with white background
         doc.setFillColor(255, 255, 255);
         doc.setDrawColor(200);
         doc.setLineWidth(0.3);
-        doc.rect(qrX, qrY, qrBoxWidth, qrBoxHeight, 'FD');
-  
+        doc.rect(qrX, qrY, qrBoxWidth, qrBoxHeight, "FD");
+
         doc.setFontSize(11);
         doc.setTextColor(...textColor);
-        doc.text("Scan to Pay", qrX + qrBoxWidth / 2, qrY + 8, { align: "center" });
-  
+        doc.text("Scan to Pay", qrX + qrBoxWidth / 2, qrY + 8, {
+          align: "center",
+        });
+
         doc.addImage(billData.qr, "PNG", qrX + 5, qrY + 13, 50, 50);
       } catch (err) {
         console.error("QR error", err);
       }
     }
-  
+
     // === Footer Thank You ===
     doc.setFontSize(11);
     doc.setFont(undefined, "normal");
     doc.setTextColor(...primaryColor);
-    doc.text("Thank you for shopping with us!", pageWidth / 2, pageHeight - 10, {
-      align: "center",
-    });
-  
+    doc.text(
+      "Thank you for shopping with us!",
+      pageWidth / 2,
+      pageHeight - 10,
+      {
+        align: "center",
+      }
+    );
+
     doc.save("invoice.pdf");
     setBillItems([]);
   };
@@ -233,7 +263,7 @@ export default function BillingPage() {
             />
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="btn btn-primary"
             >
               Add Item
             </button>
@@ -292,10 +322,7 @@ export default function BillingPage() {
           <div className="text-2xl font-bold text-gray-800">
             Total: ₹{calculateTotal().toFixed(2)}
           </div>
-          <button
-            onClick={printBill}
-            className="btn btn-neutral"
-          >
+          <button onClick={printBill} className="btn btn-neutral">
             Print Bill
           </button>
         </div>
@@ -314,8 +341,18 @@ export default function BillingPage() {
 
       {toast && (
         <div className="fixed bottom-4 right-4 bg-white shadow-lg rounded-lg p-4 max-w-sm">
+          {/* Close button */}
+          <button
+            onClick={() => setToast(null)}
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg font-bold focus:outline-none"
+            aria-label="Close toast"
+          >
+            &times;
+          </button>
+
           <h3 className="font-bold text-lg">{toast.title}</h3>
           <p className="text-gray-600">{toast.description}</p>
+
           {toast.action && (
             <button
               onClick={() => {

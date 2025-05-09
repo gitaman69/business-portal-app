@@ -63,20 +63,20 @@ const DataEntryPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       // Add the transaction via API
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/auth/addTransaction`,
         newTransaction
       );
-  
+
       // Destructure transaction from the API response
       const { transaction } = response.data;
-  
+
       // Update the transactions list
       setTransactions((prev) => [...prev, transaction]);
-  
+
       // Update the bank balance in the state
       setBankAccounts((prev) =>
         prev.map((account) => {
@@ -86,7 +86,7 @@ const DataEntryPage = () => {
           return account;
         })
       );
-  
+
       // Reset the form fields
       setNewTransaction({
         date: new Date().toISOString().split("T")[0],
@@ -95,22 +95,21 @@ const DataEntryPage = () => {
         mode: "",
         account: "",
       });
-  
+
       // Display a success toast message
       setToastMessage("Transaction added successfully!");
       setToastType("success");
-  
+
       // Optionally refresh the data
       fetchData();
     } catch (error) {
       console.error("Error adding transaction:", error);
-  
+
       // Display an error toast message
       setToastMessage("Failed to add transaction.");
       setToastType("error");
     }
   };
-  
 
   const addPaymentMode = async () => {
     if (newPaymentMode) {
@@ -229,7 +228,14 @@ const DataEntryPage = () => {
   const downloadEStatement = () => {
     const csvContent = [
       ["Date", "Amount", "Type", "Payment Mode", "Net Balance", "Bank Account"],
-      ...transactions.map((t) => [t.date, t.amount, t.type, t.mode, t.netBalance, t.account]),
+      ...transactions.map((t) => [
+        t.date,
+        t.amount,
+        t.type,
+        t.mode,
+        t.netBalance,
+        t.account,
+      ]),
     ]
       .map((e) => e.join(","))
       .join("\n");
@@ -306,10 +312,7 @@ const DataEntryPage = () => {
               </option>
             ))}
           </select>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-          >
+          <button type="submit" className="w-full btn btn-primary">
             Add Transaction
           </button>
         </div>
@@ -332,32 +335,50 @@ const DataEntryPage = () => {
         </button>
       </div>
 
+      {/* Add Payment Mode */}
+      <div className="mb-6">
+        <div className="flex items-center gap-x-2">
+          <input
+            type="text"
+            value={newPaymentMode}
+            onChange={(e) => setNewPaymentMode(e.target.value)}
+            placeholder="New Payment Mode"
+            className="input input-neutral"
+          />
+          <button onClick={addPaymentMode} className="btn btn-primary">
+            Add Payment Mode
+          </button>
+        </div>
+      </div>
+
       {/* Add Bank Account */}
       <div className="mb-8">
-        <input
-          type="text"
-          value={newBankAccount.name}
-          onChange={(e) =>
-            setNewBankAccount((prev) => ({ ...prev, name: e.target.value }))
-          }
-          placeholder="New Bank Account Name"
-          className="border p-2 rounded mr-2"
-        />
-        <input
-          type="number"
-          value={newBankAccount.balance}
-          onChange={(e) =>
-            setNewBankAccount((prev) => ({ ...prev, balance: e.target.value }))
-          }
-          placeholder="Initial Balance"
-          className="border p-2 rounded mr-2"
-        />
-        <button
-          onClick={addBankAccount}
-          className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
-        >
-          Add Bank Account
-        </button>
+        <div className="flex items-center gap-x-2 mb-2">
+          <input
+            type="text"
+            value={newBankAccount.name}
+            onChange={(e) =>
+              setNewBankAccount((prev) => ({ ...prev, name: e.target.value }))
+            }
+            placeholder="New Bank Account Name"
+            className="input input-neutral"
+          />
+          <input
+            type="number"
+            value={newBankAccount.balance}
+            onChange={(e) =>
+              setNewBankAccount((prev) => ({
+                ...prev,
+                balance: e.target.value,
+              }))
+            }
+            placeholder="Initial Balance"
+            className="input input-neutral"
+          />
+          <button onClick={addBankAccount} className="btn btn-primary">
+            Add Bank Account
+          </button>
+        </div>
       </div>
 
       {/* Payment Modes List */}
@@ -444,12 +465,14 @@ const DataEntryPage = () => {
                 <tr key={transaction._id}>
                   <td className="border p-2">{transaction.date}</td>
                   <td className="border p-2">
-                  ₹{parseFloat(transaction.amount).toFixed(2)}
+                    ₹{parseFloat(transaction.amount).toFixed(2)}
                   </td>
                   <td className="border p-2">{transaction.type}</td>
                   <td className="border p-2">{transaction.mode}</td>
                   <td className="border p-2">{transaction.account}</td>
-                  <td className="border p-2">₹{parseFloat(transaction.netBalance).toFixed(2)}</td>
+                  <td className="border p-2">
+                    ₹{parseFloat(transaction.netBalance).toFixed(2)}
+                  </td>
                   <td className="border p-2">
                     <button
                       className="text-red-500"
@@ -478,7 +501,7 @@ const DataEntryPage = () => {
       {/* Download E-Statement Button */}
       <button
         onClick={downloadEStatement}
-        className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+        className="mt-4 btn btn-primary"
       >
         Download E-Statement
       </button>

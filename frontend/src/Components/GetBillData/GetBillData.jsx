@@ -37,39 +37,37 @@ const SeeBillData = () => {
       ) : billData.length === 0 ? (
         <p className="text-center">No bill data available.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md text-sm sm:text-base">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 text-left whitespace-nowrap">Store Name</th>
-                <th className="px-4 py-2 text-left whitespace-nowrap">Store Email</th>
-                <th className="px-4 py-2 text-left whitespace-nowrap">Store Contact</th>
-                <th className="px-4 py-2 text-left whitespace-nowrap">Store Address</th>
-                <th className="px-4 py-2 text-left whitespace-nowrap">QR Code</th>
-              </tr>
-            </thead>
-            <tbody>
-              {billData.map((bill, index) => (
-                <tr key={index} className="border-t">
-                  <td className="px-4 py-2 break-words">{bill.storeName}</td>
-                  <td className="px-4 py-2 break-words">{bill.storeMail}</td>
-                  <td className="px-4 py-2 break-words">{bill.storeContact}</td>
-                  <td className="px-4 py-2 break-words">{bill.storeAddress}</td>
-                  <td className="px-4 py-2">
-                    {bill.qr ? (
-                      <img
-                        src={bill.qr}
-                        alt="QR Code"
-                        className="w-16 h-16 object-contain border rounded"
-                      />
-                    ) : (
-                      <span className="text-gray-500 italic">No QR</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid gap-6">
+          {billData.map((bill, index) => (
+            <div key={index} className="border rounded-lg p-4 shadow bg-white">
+              <div className="mb-2">
+                <strong>Store Name:</strong> <span>{bill.storeName}</span>
+              </div>
+              <div className="mb-2">
+                <strong>Store Email:</strong> <span>{bill.storeMail}</span>
+              </div>
+              <div className="mb-2">
+                <strong>Store Contact:</strong> <span>{bill.storeContact}</span>
+              </div>
+              <div className="mb-2">
+                <strong>Store Address:</strong> <span>{bill.storeAddress}</span>
+              </div>
+              <div>
+                <strong>QR Code:</strong>
+                <div className="mt-2">
+                  {bill.qr ? (
+                    <img
+                      src={bill.qr}
+                      alt="QR Code"
+                      className="w-24 h-24 object-contain border rounded"
+                    />
+                  ) : (
+                    <span className="text-gray-500 italic">No QR</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
