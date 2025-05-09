@@ -8,7 +8,9 @@ const config = {
   },
   plugins: [daisyui],
   daisyui: {
-    themes: ['dark','light'],
+    themes: ['light'],       // Only use the light theme
+    darkTheme: 'light',      // Override dark mode fallback
+    base: true,              // Use base styles
   },
 };
 
