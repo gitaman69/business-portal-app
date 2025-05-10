@@ -252,7 +252,7 @@ export default function BillingPage() {
         </h1>
 
         <form onSubmit={handleBarcodeSubmit} className="mb-6">
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="text"
               placeholder="Scan or enter barcode"
