@@ -4,6 +4,12 @@ const { loginUser, registerUser, sendEmail, addProduct, getProduct, getAllData, 
 const authMiddleware = require('../Middleware/middleware');
 const router = express.Router();
 
+// Health check route
+// This route is used to check if the server is running and healthy
+router.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 // Start Google OAuth
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 

@@ -16,6 +16,7 @@ import DonatePage from './Components/DonatePage/DonatePage.jsx';
 import About from './Components/About/About.jsx';
 import PrivacyPolicy from './Components/About/PrivacyPolicy.jsx';
 import ContactUs from './Components/About/ContactUs.jsx';
+import ServerStatusBanner from './ServerStatusBanner.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -45,6 +46,8 @@ function App() {
   );
 
   return (
+    <>
+    <ServerStatusBanner />
     <Router>
       <Routes>
         <Route path="/signup" element={<SignUpPage />} />
@@ -66,6 +69,7 @@ function App() {
         </Route>
       </Routes>
     </Router>
+    </>
   );
 }
 
