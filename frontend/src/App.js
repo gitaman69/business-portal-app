@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, Outlet } from 'react-router-dom';
 import Header from './Components/Header/header.jsx';
 import SignUpPage from './Components/SignUp/SignUpPage.jsx';
@@ -32,8 +32,11 @@ function App() {
   const ProtectedRoute = ({ children }) => {
     return user ? children : <Navigate to="/login" />;
   };
-  
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }, []);
+  
   const HeaderLayout = () => (
     <>
       <Header user={user} onLogout={handleLogout} />
